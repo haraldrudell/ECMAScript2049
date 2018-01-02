@@ -1,8 +1,8 @@
 <!doctype html>
 <title>ECMAScript 2049 readme</title>
-<h1>ECMAScript 2049</h1>
-<p><a href=>ECMAScript 2049</a> <a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/packages/es2049package>es2049package</a></p>
-<h2>es2049script Package</h2>
+<h1>ECMAScript 2049 Scripts</h1>
+<p><a href=https://github.com/haraldrudell/ECMAScript2049>ECMAScript 2049</a> <a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/packages/es2049package>es2049package</a></p>
+<h2>es2049scripts Package</h2>
 <img src=https://pbs.twimg.com/media/DRC-drOWsAABHUT.jpg:large alt="ECMAScript 2049" />
 <p><strong>ERASE THE PAST</strong></p>
 <p>&emsp;</p>
@@ -46,18 +46,19 @@
   <li><p>Add <strong>es2049scripts</strong> to your project:<br />
   <code>yarn add es2049scripts --dev</code></p></li>
   <li><p>Add <strong>es2049scripts</strong> to a <strong>scripts</strong> entry in <strong>package.json</strong>:<br />
-  <code>
-  <pre>…<br />"scripts": {<br />"start":<br />&emsp;"es2049scripts -- config",<br />…</pre>
-  </code></p></li>
-  <li><p>Write some <strong>ES.Next</strong> code in <strong>configes/index.mjs:</strong>
+  <pre><code>…
+"scripts": {
+   "start": "es2049scripts -- config",
+…</code></pre></p></li>
+  <li><p>Write some <strong>ES.Next</strong> code in <strong>configes/index.mjs:</strong></p>
   <pre><code>console.log('The next ReactJS version:')
 f()
 async function f () {
   for await (let v of [Promise.resolve(17)])
     console.log(`${v}`)
-}</code</pre></p></li>
-  <li><p>Run!<br />
-  <code>yarn run start</code></p></li>
+}</code></pre></li>
+  <li><p>Run!</p>
+  <code>yarn run start</code></li>
 </ol>
 <p><strong>es2049scripts</strong> transpiles .js and .mjs to .js or .mjs with target options &#8209;current &#8209;latest &#8209;rollup.<br />Use <code>node_modules/.bin/es2049scripts &#8209;help</code> for more information:</p>
 <code><pre>
