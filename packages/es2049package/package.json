@@ -1,0 +1,39 @@
+{
+  "name": "es2049package",
+  "version": "0.0.1",
+  "description": "ECMAScript 2049: ES.Next on every line by triple-transpile: ERASE THE PAST",
+  "author": "Harald Rudell <harald.rudell@gmail.com> (http://haraldrudell.com)",
+  "license": "ISC",
+  "scripts": {
+    "build": "es2049scripts -debug configes config rollup --config config/rollup.config.js",
+    "transpile": "",
+    "test": "echo 'No tests exist for es2049package'"
+  },
+  "main": "lib/es2049package.js",
+  "module": "lib/es2049package.mjs",
+  "keywords": [
+    "ECMAScript",
+    "ECMAScript 2049",
+    "ES.Next",
+    "JavaScript",
+    "Transpile"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/haraldrudell/ecmascript2049"
+  },
+  "private": true,
+  "devDependencies": {
+    "es2049scripts": "0.0.1",
+    "rollup": "^0.53.2"
+  },
+  "dependencies": {
+    "babel-core": "^6.26.0",
+    "rollup-plugin-babel": "^3.0.3",
+    "rollup-plugin-commonjs": "^8.2.6",
+    "rollup-plugin-eslint": "^4.0.0",
+    "rollup-plugin-json": "^2.3.0",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-shebang": "^0.1.4"
+  }
+}
