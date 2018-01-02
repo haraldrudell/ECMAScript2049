@@ -43,8 +43,8 @@
 <p>Typical use is to have a <strong>configes</strong> direcory of <strong>ES.Next</strong> code that is on-the-fly transpiled into the <strong>config</strong> directory by the <strong>scripts</strong> entry of <strong>package.json</strong></p>
 <p>Note: <strong>yarn</strong> is expected to be installed on the host</p>
 <ol>
-  <li><p>Add <strong>es2049scripts</strong> to your project:<br />
-  <code>yarn add es2049scripts --dev</code></p></li>
+  <li><p>Add <strong>es2049scripts</strong> to your project:</p>
+  <pre><code>yarn add es2049scripts --dev</code></pre></li>
   <li><p>Add <strong>es2049scripts</strong> to a <strong>scripts</strong> entry in <strong>package.json</strong>:<br />
   <pre><code>…
 "scripts": {
@@ -58,11 +58,11 @@ async function f () {
     console.log(`${v}`)
 }</code></pre></li>
   <li><p>Run!</p>
-  <code>yarn run start</code></li>
+  <pre><code>yarn run start</code></pre></li>
 </ol>
-<p><strong>es2049scripts</strong> transpiles .js and .mjs to .js or .mjs with target options &#8209;current &#8209;latest &#8209;rollup.<br />Use <code>node_modules/.bin/es2049scripts &#8209;help</code> for more information:</p>
-<code><pre>
-node_modules/.bin/es2049scripts -help
+<p><strong>es2049scripts</strong> transpiles .js and .mjs to .js or .mjs with target options <strong>&#8209;current &#8209;latest &#8209;rollup.</strong></p>
+<p>Use <pre><code>node_modules/.bin/es2049scripts &#8209;help</code></pre> for more information:</p>
+<pre><code><pre>node_modules/.bin/es2049scripts -help
     version: 0.0.1
   transpiles scripts from ES.Next to Node.js executable format
     default target is Node.js 6 (Long Term Support)
@@ -77,9 +77,8 @@ node_modules/.bin/es2049scripts -help
     Transpiles .js and .mjs (to .js), other files are copied
     Actions may be skipped based on modification date
   target-directory default: ./config
-  args…  Any command with arguments to be launched on transpile complete
-</pre></code>
-<p>An existing <strong>es2049scripts-test</strong> package will be published, since testing a project with yarn wokspaces needs to be in a completely separate repository</p>
+  args…  Any command with arguments to be launched on transpile complete</code></pre>
+<p>An <strong>es2049scripts-test</strong> package will be published, since testing a project with yarn wokspaces needs to be in a completely separate repository</p>
 <h2>Requirements</h2>
 <p>To develop or compile the <strong>ECMAScript 2049</strong> project <strong>Yarn</strong> 1+ and <strong>Node.js current</strong> (v8.5+) are required.</p>
 <p>© <a href=http://haraldrudell.com>Harald Rudell</a> created <strong>ECMAScript 2049</strong> in December 2017. ISC License</p>
