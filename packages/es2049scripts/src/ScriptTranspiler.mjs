@@ -13,7 +13,7 @@ import util from 'util'
 export default class ScriptTranspiler {
   js = '.js'
   mjs = '.mjs'
-  mjsExtOutEnv = 'latest'
+  envKeepMjs = 'latest'
 
   constructor(o) {
     const {name, envName, debug} = o || false
@@ -21,14 +21,14 @@ export default class ScriptTranspiler {
     const env = this.getEnv(envName)
     const babelOptions = babelEnv[env]
     if (!babelOptions) throw new Error(`${m} Unknown Babel envName: '${env}'`)
-    const keepMjsExt = env === this.mjsExtOutEnv
-    const envFriendly = this.getEnvName(envName)
+    const keepMjsExt = env === this.envKeepMjs
+    const envFriendly = this.getPrintableEnv(envName)
     const cwd = process.cwd()
     Object.assign(this, {babelOptions, envFriendly, debug, cwd, keepMjsExt})
     debug && console.log(`env: ${env} ${envFriendly} mjs: ${keepMjsExt}`, util.inspect(babelEnv, {depth: null, colors: true}))
   }
 
-  async transpile({from, to, envName}) {
+  async transpile({from, to}) {
     if (!await fs.pathExists(from) || !(await fs.stat(from)).isDirectory()) throw new Error(`${this.m} not directory: '${from}'`)
     return this.transpileDirectory(from, to)
   }
@@ -53,12 +53,10 @@ export default class ScriptTranspiler {
       const ext = path.extname(entry)
       const toExt = this.getToExt(ext)
       const dest = path.join(to, entry.slice(0, -ext.length) + toExt)
-      if (!await this.needsUpdate(absolute, dest)) continue
-      if (!this.shouldTranspile(ext)) {
-        ps.push(fs.copy(absolute, dest))
-        continue
-      }
-      ps.push(this.transpileFile(absolute, dest))
+      if (!all && !await this.needsUpdate(absolute, dest)) continue
+      ps.push(!this.shouldTranspile(ext)
+        ? fs.copy(absolute, dest)
+        : this.transpileFile(absolute, dest))
     }
     return Promise.all(ps)
   }
@@ -75,7 +73,7 @@ export default class ScriptTranspiler {
 
   getEnv = env => env || process.env.BABEL_ENV || process.env.NODE_ENV || 'development'
 
-  getEnvName(env) {
+  getPrintableEnv(env) {
     if (env) return env
     const be = process.env.BABEL_ENV
     if (be) return `BABEL_ENV=${be}`

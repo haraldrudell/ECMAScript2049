@@ -5,7 +5,7 @@ This source code is licensed under the ISC-style license found in the LICENSE fi
 import childProcess from 'child_process'
 const cspawn = childProcess.spawn
 
-export default class Build {
+export default class Builder {
   async build() {
     await this.run('eslint', ['configes', 'configrollup'])
     await this.run('rollup', ['--config', 'config/rollup.config.js'])

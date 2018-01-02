@@ -6,7 +6,7 @@ var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
 let run = (() => {
   var _ref = (0, _asyncToGenerator3.default)(function* () {
-    return new _Build2.default().build();
+    return new _Builder2.default().build();
   });
 
   return function run() {
@@ -14,9 +14,9 @@ let run = (() => {
   };
 })();
 
-var _Build = require('./Build');
+var _Builder = require('./Builder');
 
-var _Build2 = _interopRequireDefault(_Build);
+var _Builder2 = _interopRequireDefault(_Builder);
 
 var _package = require('../package.json');
 
@@ -31,7 +31,7 @@ This source code is licensed under the ISC-style license found in the LICENSE fi
 // node --experimental-modules src (v8.5+ v9.3+)
 const nameField = Object(_package2.default).name;
 const m = String(nameField || 'src/index');
-let debug = true; // TODO set to undefined
+let debug = true;
 
 run().catch(errorHandler);
 

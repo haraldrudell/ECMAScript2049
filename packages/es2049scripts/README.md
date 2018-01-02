@@ -63,6 +63,7 @@ async function f () {
 <p><strong>es2049scripts</strong> transpiles .js and .mjs to .js or .mjs with target options <strong>&#8209;current &#8209;latest &#8209;rollup.</strong></p>
 <p>Use <pre><code>node_modules/.bin/es2049scripts &#8209;help</code></pre> for more information:</p>
 <pre><code>node_modules/.bin/es2049scripts -help
+es2049scripts [options] source-directory target-directory args…
     version: 0.0.1
   transpiles scripts from ES.Next to Node.js executable format
     default target is Node.js 6 (Long Term Support)
@@ -72,7 +73,6 @@ async function f () {
     Extension .mjs is kept on output
   -rollup  Target transpile of rollup.config.js: Node.js v4.8.1 with import
   --  Skip options parsing to args parameters
-
   source-directory default: ./configes
     Transpiles .js and .mjs (to .js), other files are copied
     Actions may be skipped based on modification date

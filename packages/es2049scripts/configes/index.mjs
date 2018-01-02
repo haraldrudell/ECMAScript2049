@@ -3,17 +3,17 @@
 This source code is licensed under the ISC-style license found in the LICENSE file in the root directory of this source tree.
 */
 // node --experimental-modules src (v8.5+ v9.3+)
-import Build from './Build'
+import Builder from './Builder'
 import pjson from '../package.json'
 
 const nameField = Object(pjson).name
 const m = String(nameField || 'src/index')
-let debug = true // TODO set to undefined
+let debug = true
 
 run().catch(errorHandler)
 
 async function run() {
-  return new Build(). build()
+  return new Builder().build()
 }
 
 function errorHandler(e) {
