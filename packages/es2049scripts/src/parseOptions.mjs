@@ -37,7 +37,7 @@ export default function parseOptions({argv, name, version}) {
     case '-debug':
       options.debug = true
       break
-      case '-current':
+    case '-current':
       options.envName = 'current'
       break
     case '-rollup':

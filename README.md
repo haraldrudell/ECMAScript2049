@@ -1,7 +1,7 @@
 <!doctype html>
 <title>ECMAScript 2049 readme</title>
 <h1>ECMAScript 2049</h1>
-<p><a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/packages/es2049scripts>es2049scripts</a> <a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/packages/es2049package>es2049package</a></p>
+<p>Links: <a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/packages/es2049scripts>es2049scripts</a> <a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/packages/es2049package>es2049package</a></p>
 <img src=https://pbs.twimg.com/media/DRC-drOWsAABHUT.jpg:large alt="ECMAScript 2049" />
 <p><strong>ERASE THE PAST</strong></p>
 <p>&emsp;</p>

@@ -52,7 +52,7 @@ export default class ScriptTranspiler {
       }
       const ext = path.extname(entry)
       const toExt = this.getToExt(ext)
-      const dest = path.join(to, entry.slice(0, -ext.length) + toExt)
+      const dest = path.join(to, ext === toExt ? entry : entry.slice(0, -ext.length) + toExt)
       if (!all && !await this.needsUpdate(absolute, dest)) continue
       ps.push(!this.shouldTranspile(ext)
         ? fs.copy(absolute, dest)
@@ -71,7 +71,7 @@ export default class ScriptTranspiler {
     await fs.writeFile(to, code)
   }
 
-  getEnv = env => env || process.env.BABEL_ENV || process.env.NODE_ENV || 'development'
+  getEnv = env => String(env || process.env.BABEL_ENV || process.env.NODE_ENV || 'development')
 
   getPrintableEnv(env) {
     if (env) return env
@@ -79,7 +79,7 @@ export default class ScriptTranspiler {
     if (be) return `BABEL_ENV=${be}`
     const ne = process.env.NODE_ENV
     if (ne) return `NODE_ENV=${ne}`
-    return `default: development`
+    return 'default: development'
   }
 
   async needsUpdate(from, to) {
