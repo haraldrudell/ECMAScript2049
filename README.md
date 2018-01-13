@@ -1,7 +1,8 @@
 <!doctype html>
 <title>ECMAScript 2049 readme</title>
 <h1>ECMAScript 2049</h1>
-<p>Links: <a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/packages/es2049scripts>es2049scripts</a> <a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/packages/es2049package>es2049package</a></p>
+<p>This is the monolithic repository</p>
+<p>Links to packages: <a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/packages/es2049scripts>es2049scripts</a> <a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/packages/es2049package>es2049package</a></p>
 <img src=https://pbs.twimg.com/media/DRC-drOWsAABHUT.jpg:large alt="ECMAScript 2049" />
 <p><strong>ERASE THE PAST</strong></p>
 <p>&emsp;</p>
@@ -22,6 +23,7 @@
   <li><p><strong>es2049scripts</strong> package allows for build scripts to be written in <strong>ES.Next</strong>, solving an issue of the last four years:<br /><br />&emsp;Running the unrunnable <strong>ES.Next</strong> chicken-and-egg problem</p></li>
   <li><p><strong>ECMAScript 2049</strong> aligns with <strong>Agile Method</strong> to produce the best possible design at that point in time</li>
   <li><p><strong>ECMAScript 2049</strong> keeps developers and engineers happy and programming <strong>ECMAScript</strong> fun</li>
-  <li><p><strong>ECMAScript 2049</strong> offers <strong>venture capital</strong> investment opportunities in new technology, as opposed to building companies on technology that is old and obsolete</li>
+  <li><p><strong>ECMAScript 2049</strong> offers <strong>venture capital</strong> investment opportunities in new technology, as opposed to building companies on technology that is old and obsolete as in Node.js 6 ECMAScript from April 2016 or worse</li>
 </ul>
+<p>The doctype tags at the top are caused by github’s refusal to still in December 2017 support standards-compliant html5 from 2014</p>
 <p>© <a href=http://haralrudell.com>Harald Rudell</a> created <strong>ECMAScript 2049</strong> in December 2017. ISC License</p>

@@ -51,25 +51,23 @@ export default function parseOptions({argv, name, version}) {
       i = argv.length
       break
     default:
-      if (arg.startsWith('-')) {
-        console.error(`Unknown option: '${arg}'\n`)
+      let optErr
+      if (arg.startsWith('-')) optErr = `Unknown option: '${arg}'\n`
+      else if (!arg) optErr = 'Directory name cannot be empty'
+      if (optErr) {
+        console.error(optErr)
         console.error(help)
         process.exit(2)
       }
-      if (!arg) {
-        console.error('Directory name cannot be empty')
-        console.error(help)
-        process.exit(2)
-      }
-      if (argCount < 2) filenames[filenameProperties[argCount++]] = arg
-      else {
+
+      if (argCount < 2) {
+        const filenameProperty = filenameProperties[argCount++]
+        filenames[filenameProperty] = path.resolve(arg)
+      } else {
         args = argv.slice(i)
         i = argv.length
       }
       break
     }
-  for (let prop of filenameProperties) {
-    filenames[prop] = path.resolve(filenames[prop])
-  }
   return {filenames, options, args}
 }
