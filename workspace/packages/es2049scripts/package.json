@@ -1,6 +1,6 @@
 {
   "name": "es2049scripts",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "ECMAScript 2049: ES.Next on every line by triple-transpile by Harald Rudell: ERASE THE PAST",
   "author": "Harald Rudell <harald.rudell@gmail.com> (http://haraldrudell.com)",
   "license": "ISC",
@@ -16,68 +16,6 @@
     "testmjs": "node --experimental-modules src/esmodule.test.mjs",
     "testProject": "node config/scripts-test",
     "test": "jest"
-  },
-  "babel": {
-    "env": {
-      "development": {
-        "babelrc": false,
-        "sourceMaps": true,
-        "presets": [
-          [
-            "env",
-            {
-              "targets": {
-                "node": "6"
-              }
-            }
-          ],
-          "stage-0"
-        ],
-        "plugins": [
-          "external-helpers",
-          "transform-runtime"
-        ]
-      },
-      "test": {
-        "babelrc": false,
-        "sourceMaps": true,
-        "presets": [
-          [
-            "env",
-            {
-              "targets": {
-                "node": "current"
-              }
-            }
-          ],
-          "stage-0"
-        ],
-        "plugins": [
-          "external-helpers",
-          "transform-runtime"
-        ]
-      },
-      "rollup": {
-        "babelrc": false,
-        "sourceMaps": true,
-        "presets": [
-          [
-            "env",
-            {
-              "targets": {
-                "node": "4.8.1"
-              },
-              "modules": false
-            }
-          ],
-          "stage-0"
-        ],
-        "plugins": [
-          "external-helpers",
-          "transform-runtime"
-        ]
-      }
-    }
   },
   "keywords": [
     "ECMAScript",

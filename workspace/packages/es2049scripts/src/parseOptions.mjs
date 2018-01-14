@@ -62,7 +62,6 @@ export default function parseOptions({argv, name, version}) {
 
       if (argCount < 2) {
         const filenameProperty = filenameProperties[argCount++]
-        console.log('ARG', filenameProperty, arg)
         filenames[filenameProperty] = arg
       } else {
         args = argv.slice(i)
