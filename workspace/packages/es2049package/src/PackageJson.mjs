@@ -1,6 +1,6 @@
 /*
 © 2017-present Harald Rudell <harald.rudell@gmail.com> (http://www.haraldrudell.com)
-All rights reerved.
+This source code is licensed under the ISC-style license found in the LICENSE file in the root directory of this source tree.
 */
 // rollup ECMAScript 2015: no class properties
 import fs from 'fs'

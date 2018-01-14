@@ -1,16 +1,21 @@
 {
   "name": "es2049package",
   "version": "0.0.1",
-  "description": "ECMAScript 2049: ES.Next on every line by triple-transpileby triple-transpile by Harald Rudell: ERASE THE PAST",
+  "description": "ECMAScript 2049 package: zero-configuration libraries and command-line utilies by Harald Rudell",
   "author": "Harald Rudell <harald.rudell@gmail.com> (http://haraldrudell.com)",
   "license": "ISC",
   "scripts": {
-    "build": "es2049scripts -debug configes config rollup --config config/rollup.config.js",
-    "transpile": "",
+    "build": "es2049scripts -rollup -- rollup --config config/rollup.config.js",
+    "clean": "rimraf build lib",
+    "clean:config": "rimraf config",
     "test": "echo 'No tests exist for es2049package'"
   },
   "main": "lib/es2049package.js",
   "module": "lib/es2049package.mjs",
+  "bin": {
+    "clean": "build/clean",
+    "rollup": "build/rollup"
+  },
   "keywords": [
     "ECMAScript",
     "ECMAScript 2049",
@@ -23,11 +28,12 @@
     "url": "https://github.com/haraldrudell/ECMAScript2049"
   },
   "devDependencies": {
-    "es2049scripts": "0.0.1",
-    "rollup": "^0.53.2"
+    "es2049scripts": "^0.0.9",
+    "rimraf": "^2.6.2"
   },
   "dependencies": {
     "babel-core": "^6.26.0",
+    "rollup": "^0.53.2",
     "rollup-plugin-babel": "^3.0.3",
     "rollup-plugin-commonjs": "^8.2.6",
     "rollup-plugin-eslint": "^4.0.0",

@@ -1,6 +1,6 @@
 /*
 © 2017-present Harald Rudell <harald.rudell@gmail.com> (http://www.haraldrudell.com)
-All rights reserved.
+This source code is licensed under the ISC-style license found in the LICENSE file in the root directory of this source tree.
 */
 // ECMAScipt 2015 as supported by rollup. No class properties, async generators or object spread operator
 import RollupConfigurator from './RollupConfigurator'

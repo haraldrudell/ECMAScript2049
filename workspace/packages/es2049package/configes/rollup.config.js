@@ -1,12 +1,10 @@
 /*
 © 2017-present Harald Rudell <harald.rudell@gmail.com> (http://www.haraldrudell.com)
-This source code is licensed under license found in the LICENSE file in the root directory of this source tree.
+This source code is licensed under the ISC-style license found in the LICENSE file in the root directory of this source tree.
 */
-// ECMAScipt 2015 as supported by rollup. No class properties, async generators or object spread operator
-// TODO this needs do be pre-transpiled once that package is completed
 import pjson from '../package.json'
-import nodeIgnores from '../src/nodepackages'
-import babelPrintFilename from '../src/babelPrintFilename'
+import nodeIgnores from '../src/nodepackages.mjs'
+import babelPrintFilename from '../src/babelPrintFilename.mjs'
 
 import babel from 'rollup-plugin-babel'
 import commonjs from 'rollup-plugin-commonjs'
