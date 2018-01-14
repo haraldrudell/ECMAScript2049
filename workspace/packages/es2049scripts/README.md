@@ -1,14 +1,17 @@
 <!doctype html>
 <title>ECMAScript 2049 readme</title>
 <h1>ECMAScript 2049 Scripts</h1>
-<p>Links: <a href=https://github.com/haraldrudell/ECMAScript2049>ECMAScript 2049</a> <a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/packages/es2049package>es2049package</a> <a href=https://github.com/haraldrudell/ECMAScript2049-test>test-package</a></p>
-<h2>es2049scripts Package</h2>
-<img src=https://pbs.twimg.com/media/DRC-drOWsAABHUT.jpg:large alt="ECMAScript 2049" />
+<img src="./assets/ECMAScript 2049.png" alt="ECMAScript 2049" />
 <p><strong>ERASE THE PAST</strong></p>
 <p>&emsp;</p>
 <p>© <a href=http://haraldrudell.com>Harald Rudell</a> created <strong>ECMAScript 2049</strong> in December 2017. ISC License</p>
 <p>&emsp;</p>
-<p><strong>ECMAScript 2049</strong> is an installable software package allowing use of <strong>ECMAScript ES.Next</strong> language features early</p>
+
+<p>This is the <strong>es2049scripts</strong> package</p>
+<p>Repository links:<br />
+<strong><a href=https://github.com/haraldrudell/ECMAScript2049>ECMAScript 2049</a></strong> the monolithic repository<br />
+<strong><a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/workspace/packages/es2049package>es2049package</a></strong> providing zero-configuration libraries and command-line utilities based on RollupJS<br />
+<strong><a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/es2049scripts-test>es2049scripts-test</a></strong> tests for es2049scripts</p>
 
 <h2>Benefits</h2>
 <ul>
@@ -97,5 +100,7 @@ Done in 0.73s.
 <p>To develop or compile the <strong>ECMAScript 2049</strong> project <strong>Yarn</strong> 1+ and <strong>Node.js current</strong> (v8.5+) are required.</p>
 <p><code>yarn test</code> tests that the built executable is runnable.</p>
 <p><code>yarn testmjs</code> tests that experimental module support appears to be working.</p>
-<p>Additional tests are in the <a href=https://github.com/haraldrudell/ECMAScript2049-test>ECMAScript2049-test</a> repository, since they need to be outside of the monolithic repository.</p>
+<p>Additional tests are in the <a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/es2049scripts-test>ECMAScript2049-test</a> directory.</p>
+<p>&emsp;</p>
+
 <p>© <a href=http://haraldrudell.com>Harald Rudell</a> created <strong>ECMAScript 2049</strong> in December 2017. ISC License</p>

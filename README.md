@@ -1,14 +1,17 @@
 <!doctype html>
 <title>ECMAScript 2049 readme</title>
 <h1>ECMAScript 2049</h1>
-<p>This is the monolithic repository</p>
-<p>Links to packages: <a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/packages/es2049scripts>es2049scripts</a> <a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/packages/es2049package>es2049package</a></p>
-<img src=https://pbs.twimg.com/media/DRC-drOWsAABHUT.jpg:large alt="ECMAScript 2049" />
+<img src="./assets/ECMAScript 2049.png" alt="ECMAScript 2049" />
 <p><strong>ERASE THE PAST</strong></p>
 <p>&emsp;</p>
 <p>© <a href=http://haralrudell.com>Harald Rudell</a> created <strong>ECMAScript 2049</strong> in December 2017. ISC License</p>
 <p>&emsp;</p>
 <p><strong>ECMAScript 2049</strong> is an installable software package allowing use of <strong>ECMAScript ES.Next</strong> language features early</p>
+<p>This is the monolithic repository</p>
+<p>Repository links:<br />
+<strong><a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/workspace/packages/es2049scripts>es2049scripts</a></strong> providing build-scripts written in <strong>ES.Next</strong><br />
+<strong><a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/workspace/packages/es2049package>es2049package</a></strong> providing zero-configuration libraries and command-line utilities based on RollupJS<br />
+<strong><a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/es2049scripts-test>es2049scripts-test</a></strong> tests for es2049scripts</p>
 
 <h2>Benefits</h2>
 <ul>
