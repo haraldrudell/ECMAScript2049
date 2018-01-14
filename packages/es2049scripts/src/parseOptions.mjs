@@ -62,12 +62,16 @@ export default function parseOptions({argv, name, version}) {
 
       if (argCount < 2) {
         const filenameProperty = filenameProperties[argCount++]
-        filenames[filenameProperty] = path.resolve(arg)
+        console.log('ARG', filenameProperty, arg)
+        filenames[filenameProperty] = arg
       } else {
         args = argv.slice(i)
         i = argv.length
       }
       break
     }
-  return {filenames, options, args}
+    for (let prop of filenameProperties) {
+      filenames[prop] = path.resolve(filenames[prop])
+    }
+    return {filenames, options, args}
 }

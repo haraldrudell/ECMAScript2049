@@ -48,26 +48,32 @@
   <li><p>Add <strong>es2049scripts</strong> to a <strong>scripts</strong> entry in <strong>package.json</strong>:<br />
   <pre><code>…
 "scripts": {
-   "start": "es2049scripts -- config",
+   "start": "es2049scripts -- node config",
 …</code></pre></p></li>
   <li><p>Write some <strong>ES.Next</strong> code in <strong>configes/index.mjs:</strong></p>
   <pre><code>console.log('The next ReactJS version:')
 f()
 async function f () {
   for await (let v of [Promise.resolve(17)])
-    console.log(`${v}`)
+    console.log(v)
 }</code></pre></li>
   <li><p>Run!</p>
-  <pre><code>yarn run start</code></pre></li>
+  <pre><code>yarn start
+yarn run v1.3.2
+$ es2049scripts -- node config
+The next ReactJS version:
+17
+Done in 0.73s.
+</code></pre></li>
 </ol>
 <p><strong>es2049scripts</strong> transpiles .js and .mjs to .js or .mjs with target options <strong>&#8209;current &#8209;latest &#8209;rollup.</strong></p>
-<p>Use <pre><code>node_modules/.bin/es2049scripts &#8209;help</code></pre> for more information:</p>
-<pre><code>node_modules/.bin/es2049scripts -help
-es2049scripts [options] source-directory target-directory args…
-    version: 0.0.1
+<p>For more information, use:</p>
+<pre><code>yarn es2049scripts &#8209;help</code></pre>
+<pre><code>es2049scripts [options] source-directory target-directory args…
+    version: 0.0.9
   transpiles scripts from ES.Next to Node.js executable format
     default target is Node.js 6 (Long Term Support)
-
+&emsp;
   -current  Target the executing Node.js version, that must be v8.6+, CommonJS modules
   -latest  Target the executing Node.js version --experimental-modules v8.6+
     Extension .mjs is kept on output

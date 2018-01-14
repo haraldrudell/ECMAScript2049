@@ -18,10 +18,10 @@ run(String(nameField || 'es2049scripts'), String(verField || 'unknown version'),
 async function run(name, version, argv) {
   const {filenames, options, args} = parseOptions({argv, name, version})
   options.debug && (debug = true)
-  debug && console.log(options, filenames)
+  debug && console.log(`${name}.run:`, options, filenames)
   await new ScriptTranspiler(options).transpile(filenames)
   if (args) {
-    debug && console.log(args.join(' '))
+    debug && console.log(`${name}.launch:`, args.join(' '))
     return launch({cmd: args.shift(), args})
   }
 }

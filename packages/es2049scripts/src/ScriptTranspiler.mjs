@@ -24,8 +24,10 @@ export default class ScriptTranspiler {
     const keepMjsExt = env === this.envKeepMjs
     const envFriendly = this.getPrintableEnv(envName)
     const cwd = process.cwd()
-    Object.assign(this, {babelOptions, envFriendly, debug, cwd, keepMjsExt})
-    debug && console.log(`env: ${env} ${envFriendly} mjs: ${keepMjsExt}`, util.inspect(babelEnv, {depth: null, colors: true}))
+    Object.assign(this, {m, babelOptions, envFriendly, debug, cwd, keepMjsExt})
+    debug && console.log(`${m} constructor env: ${env}`,
+      {envFriendly, debug, cwd, keepMjsExt},
+      'babelEnv:', util.inspect(babelEnv, {depth: null, colors: true}))
   }
 
   async transpile({from, to}) {
@@ -34,6 +36,7 @@ export default class ScriptTranspiler {
   }
 
   async transpileDirectory(from, to, all) {
+    this.debug && console.log(`${this.m}.transpileDirectory ${from}`)
     const [exists, entries] = await Promise.all([
       fs.pathExists(to),
       fs.readdir(from),
@@ -62,10 +65,9 @@ export default class ScriptTranspiler {
   }
 
   async transpileFile(from, to) {
-    const {debug, cwd, babelOptions, envFriendly} = this
-    debug && console.log(`transpile: ${path.relative(cwd, from)} ` +
-      `to ${path.relative(cwd, to)} ` +
-      `env ${envFriendly}`)
+    const {debug, cwd, babelOptions} = this
+    debug && console.log(`transpileFile: ${path.relative(cwd, from)} ` +
+      `to ${path.relative(cwd, to)} `)
     const {code/*, map, ast*/} = await new Promise((resolve, reject) =>
       babel.transformFile(from, babelOptions, (e, r) => !e ? resolve(r) : reject(e)))
     await fs.writeFile(to, code)
