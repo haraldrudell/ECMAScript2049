@@ -643,6 +643,12 @@ babel-plugin-transform-regenerator@^6.22.0:
   dependencies:
     regenerator-transform "^0.10.0"
 
+babel-plugin-transform-runtime@^6.23.0:
+  version "6.23.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-runtime/-/babel-plugin-transform-runtime-6.23.0.tgz#88490d446502ea9b8e7efb0fe09ec4d99479b1ee"
+  dependencies:
+    babel-runtime "^6.22.0"
+
 babel-plugin-transform-strict-mode@^6.24.1:
   version "6.24.1"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-strict-mode/-/babel-plugin-transform-strict-mode-6.24.1.tgz#d5faf7aa578a65bbe591cf5edae04a0c67020758"
@@ -997,9 +1003,9 @@ es-to-primitive@^1.1.1:
     is-date-object "^1.0.1"
     is-symbol "^1.0.1"
 
-es2049scripts@^0.0.8:
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/es2049scripts/-/es2049scripts-0.0.8.tgz#3ddbaf303d1170e776824572ce2de7fb403e1dfb"
+es2049scripts@^0.0.10:
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/es2049scripts/-/es2049scripts-0.0.10.tgz#170a01548b912ca22f38f291c158aa029aaf50e5"
   dependencies:
     babel-core "^6.26.0"
     babel-eslint "^8.1.2"
@@ -1008,6 +1014,7 @@ es2049scripts@^0.0.8:
     babel-plugin-transform-class-properties "^6.24.1"
     babel-plugin-transform-es2015-modules-commonjs "^6.26.0"
     babel-plugin-transform-export-extensions "^6.22.0"
+    babel-plugin-transform-runtime "^6.23.0"
     babel-preset-env "^1.6.1"
     babel-preset-stage-0 "^6.24.1"
     babel-runtime "^6.26.0"

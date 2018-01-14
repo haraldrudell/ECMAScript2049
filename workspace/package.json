@@ -9,6 +9,68 @@
   "workspaces": [
     "packages/*"
   ],
+  "babel": {
+    "env": {
+      "development": {
+        "babelrc": false,
+        "sourceMaps": true,
+        "presets": [
+          [
+            "env",
+            {
+              "targets": {
+                "node": "6"
+              }
+            }
+          ],
+          "stage-0"
+        ],
+        "plugins": [
+          "external-helpers",
+          "transform-runtime"
+        ]
+      },
+      "test": {
+        "babelrc": false,
+        "sourceMaps": true,
+        "presets": [
+          [
+            "env",
+            {
+              "targets": {
+                "node": "current"
+              }
+            }
+          ],
+          "stage-0"
+        ],
+        "plugins": [
+          "external-helpers",
+          "transform-runtime"
+        ]
+      },
+      "rollup": {
+        "babelrc": false,
+        "sourceMaps": true,
+        "presets": [
+          [
+            "env",
+            {
+              "targets": {
+                "node": "4.8.1"
+              },
+              "modules": false
+            }
+          ],
+          "stage-0"
+        ],
+        "plugins": [
+          "external-helpers",
+          "transform-runtime"
+        ]
+      }
+    }
+  },
   "devDependencies": {
     "jest": "^22.0.4"
   }
