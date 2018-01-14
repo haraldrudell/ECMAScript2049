@@ -8,19 +8,26 @@ import fs from 'fs-extra'
 
 import path from 'path'
 
-doClean().catch(errorHandler)
+const m = 'cleanbin'
+let debug
 
-async function doClean() {
-  const {argv} = process
-  return clean(argv.length > 2 ? argv.slice(2) : await getRollupClean())
+doClean(process.argv.slice(2)).catch(onReject)
+
+async function doClean(argv) {
+  for (let [ix, arg] of argv.entries()) arg === '-debug' && (debug = true) && argv.splice(ix, 1)
+  const entries = argv.length ? argv : await readJsonRollupClean()
+  debug && console.log(`${m} entries: ${entries} argv.length: ${argv.length}`)
+  return clean(entries)
 }
 
-async function getRollupClean() {
+async function readJsonRollupClean() {
   const json = JSON.parse(await fs.readFile(path.resolve('package.json'), 'utf8'))
   return json && json.rollup && json.rollup.clean
 }
 
-function errorHandler(e) {
-  console.error(/*e instanceof Error ? e.message : */e)
+function onReject(e) {
+  debug && console.error(`${m} error handler:`)
+  if (!(e instanceof Error)) e = new Error(`Error value: ${typeof e} ${e}`)
+  console.error(!debug ? e.message : e)
   process.exit(1)
 }

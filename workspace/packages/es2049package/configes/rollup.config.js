@@ -7,22 +7,24 @@ import nodeIgnores from '../src/nodepackages.mjs'
 import babelPrintFilename from '../src/babelPrintFilename.mjs'
 
 import babel from 'rollup-plugin-babel'
+import chmod from '../src/chmodPlugin.mjs'
 import commonjs from 'rollup-plugin-commonjs'
 import eslint from 'rollup-plugin-eslint'
 import json from 'rollup-plugin-json'
 import resolve from 'rollup-plugin-node-resolve'
+import shebangPlugin from 'rollup-plugin-shebang'
 
 import util from 'util'
 
-const srcRollupConfig = 'src/rollup.config'
+const srcRollupConfig = 'src/rollup.config.mjs'
 
 const print = !!process.env.DEBUG
 
 export default [
   {input: srcRollupConfig, output: {file: pjson.main, format: 'cjs'}, options: {dependencies: true}},
   {input: srcRollupConfig, output: {file: pjson.module, format: 'es'}, options: {dependencies: true}},
-  {input: 'src/cleanbin.js', output: {file: 'bin/clean', format: 'cjs'}, options: {shebang: true}},
-  {input: 'src/rollup.js', output: {file: 'bin/rollup', format: 'cjs'}, options: {shebang: true}},
+  {input: 'src/cleanbin.mjs', output: {file: 'bin/clean', format: 'cjs'}, options: {shebang: true}},
+  {input: 'src/rollup.mjs', output: {file: 'bin/rollup', format: 'cjs'}, options: {shebang: true}},
 ].map(getConfig)
 
 //export default new RollupConfigurator().assembleConfig(getConfig)
@@ -32,7 +34,7 @@ function getConfig(config0) {
 
   //{input, main, module, output, external, shebang, clean, print}) {
   const includeExclude = {
-    include: '**/*.js',
+    include: ['**/*.js', '**/*.mjs'],
     exclude: 'node_modules/**',
   }
   let babelOptions
@@ -42,7 +44,7 @@ function getConfig(config0) {
     external: nodeIgnores.slice().concat(Object.keys(Object(Object(pjson).dependencies))),
     plugins:  [
       eslint(includeExclude),
-      resolve({extensions: ['.js', '.json']}),
+      resolve({extensions: ['.mjs', '.js', '.json']}),
       json(), // required for import of .json files
       babel(babelOptions = Object.assign({
         babelrc: false, // unlike babel-node, rollup fails if an es2015 module transformer is included
@@ -51,7 +53,7 @@ function getConfig(config0) {
         plugins: ['transform-runtime'].concat(print ? babelPrintFilename : []),
       }, includeExclude)),
       commonjs(),
-    ]
+    ].concat(shebang ? [shebangPlugin(), chmod()] : []),
   }
 
   if (print) {

@@ -1,6 +1,6 @@
 {
   "name": "es2049package",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "ECMAScript 2049 package: zero-configuration libraries and command-line utilies by Harald Rudell",
   "author": "Harald Rudell <harald.rudell@gmail.com> (http://haraldrudell.com)",
   "license": "ISC",
@@ -8,13 +8,15 @@
     "build": "es2049scripts -rollup -- rollup --config config/rollup.config.js",
     "clean": "rimraf build lib",
     "clean:config": "rimraf config",
-    "test": "echo 'No tests exist for es2049package'"
+    "useFilesystem": "yarn add ./packages/es2049scripts --dev",
+    "usePublic": "yarn add es2049scripts --dev",
+    "test": "jest"
   },
   "main": "lib/es2049package.js",
   "module": "lib/es2049package.mjs",
   "bin": {
-    "clean": "build/clean",
-    "rollup": "build/rollup"
+    "clean": "bin/clean",
+    "rollup": "bin/rollup"
   },
   "keywords": [
     "ECMAScript",
@@ -28,7 +30,11 @@
     "url": "https://github.com/haraldrudell/ECMAScript2049"
   },
   "devDependencies": {
-    "es2049scripts": "^0.0.9",
+    "asy-spawn": "^0.0.1",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "es2049scripts": "./packages/es2049scripts",
+    "jest": "^22.0.6",
     "rimraf": "^2.6.2"
   },
   "dependencies": {
