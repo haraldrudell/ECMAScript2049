@@ -1,0 +1,16 @@
+{
+  "name": "asy-spawn",
+  "version": "0.0.1",
+  "description": "Async spawn by Harald Rudell",
+  "author": "Harald Rudell <harald.rudell@gmail.com> (http://haraldrudell.com)",
+  "license": "ISC",
+  "main": "lib/spawn-async",
+  "scripts": {
+    "build": "es2049scripts src lib",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "es2049scripts": "^0.0.9",
+    "jest": "^22.0.6"
+  }
+}
