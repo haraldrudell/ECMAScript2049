@@ -14,8 +14,9 @@
 <strong><a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/workspace/packages/es2049package>es2049package</a></strong> providing zero-configuration libraries and command-line utilities based on RollupJS</p>
 
 <h2>Usage</h2>
-<pre><code><strong>git clone https://github.com/haraldrudell/ecmascript2049-test
-cd ecmascript2049-test
+<pre><code><strong>git clone https://github.com/haraldrudell/ECMAScript2049.git
+cd ecmascript2049
+cd es2049scripts-test
 yarn install
 yarn test</strong>
 …
