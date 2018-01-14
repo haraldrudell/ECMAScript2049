@@ -1,7 +1,7 @@
 <!doctype html>
 <title>ECMAScript 2049 readme</title>
 <h1>ECMAScript 2049 Scripts</h1>
-<p>Links: <a href=https://github.com/haraldrudell/ECMAScript2049>ECMAScript 2049</a> <a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/packages/es2049package>es2049package</a></p>
+<p>Links: <a href=https://github.com/haraldrudell/ECMAScript2049>ECMAScript 2049</a> <a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/packages/es2049package>es2049package</a> <a href=https://github.com/haraldrudell/ECMAScript2049-test>test-package</a></p>
 <h2>es2049scripts Package</h2>
 <img src=https://pbs.twimg.com/media/DRC-drOWsAABHUT.jpg:large alt="ECMAScript 2049" />
 <p><strong>ERASE THE PAST</strong></p>
@@ -84,7 +84,6 @@ Done in 0.73s.
     Actions may be skipped based on modification date
   target-directory default: ./config
   args…  Any command with arguments to be launched on transpile complete</code></pre>
-<p>An <strong>es2049scripts-test</strong> package will be published, since testing a project with yarn wokspaces needs to be in a completely separate repository</p>
 <h2>Requirements</h2>
 <p>To develop or compile the <strong>ECMAScript 2049</strong> project <strong>Yarn</strong> 1+ and <strong>Node.js current</strong> (v8.5+) are required.</p>
 <p>© <a href=http://haraldrudell.com>Harald Rudell</a> created <strong>ECMAScript 2049</strong> in December 2017. ISC License</p>
