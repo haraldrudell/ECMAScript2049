@@ -84,6 +84,18 @@ Done in 0.73s.
     Actions may be skipped based on modification date
   target-directory default: ./config
   args…  Any command with arguments to be launched on transpile complete</code></pre>
+<h2>How Does it Work?</h2>
+<h3>Compiling ZeroTranspiler</h3>
+<p>The ZeroTranspiler class is written in <strong>ES.Next</strong> and is only used by es2049scripts developers. The <code>yarn transpilezero</code> command uses the <strong>babel-cli</strong> package to transpile to Node 6 ECMAScript . The output, <code>config/transpilezero.js</code> is checked in.
+<h3>Transpiling to config</h3>
+<p>As soon as the zero transpiler has been compiled, it is used to transpile <strong>ES.Next</strong> code in <code>configes</code> and <code>configrollup</code> using the proper babel environment, this result is also checked in. At this point, the es2049scripts project can be built.</p>
+<h3>Building es2049scripts</h3>
+<p>The project is built in the usual way using the transpiled code in <code>config</code>
+<h3>Transpiling the Consuming Project</h3>
+<p>The consuming project invokes the <code>es2049scripts</code> executable that is built from the <strong>ES.Next</strong> code in <code>src</code>. The transpilation, typically into the consuming project’s config directory, uses modification dates to reduce work.
 <h2>Requirements</h2>
 <p>To develop or compile the <strong>ECMAScript 2049</strong> project <strong>Yarn</strong> 1+ and <strong>Node.js current</strong> (v8.5+) are required.</p>
+<p><code>yarn test</code> tests that the built executable is runnable.</p>
+<p><code>yarn testmjs</code> tests that experimental module support appears to be working.</p>
+<p>Additional tests are in the <a href=https://github.com/haraldrudell/ECMAScript2049-test>ECMAScript2049-test</a> repository, since they need to be outside of the monolithic repository.</p>
 <p>© <a href=http://haraldrudell.com>Harald Rudell</a> created <strong>ECMAScript 2049</strong> in December 2017. ISC License</p>

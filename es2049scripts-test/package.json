@@ -1,0 +1,40 @@
+{
+  "name": "es2049scripts-test",
+  "version": "0.0.1",
+  "description": "ECMAScript 2049: ES.Next on every line by triple-transpile by Harald Rudell: ERASE THE PAST",
+  "author": "Harald Rudell <harald.rudell@gmail.com> (http://haraldrudell.com)",
+  "license": "ISC",
+  "scripts": {
+    "default": "es2049scripts envdefault config",
+    "test:default": "npx node@6 config/envdefault2",
+    "current": "es2049scripts -debug -current envcurrent config",
+    "test:current": "run-all 'node config/envcurrent' 'node config/envcurrent2' ",
+    "latest": "es2049scripts -debug -latest envlatest config",
+    "test:latest": "run-all 'node --experimental-modules config/envlatest' 'node --experimental-modules config/envlatest2' ",
+    "rollup": "es2049scripts -debug -rollup envrollup config",
+    "test:rollup": "rollup --config config/rollup.config.js",
+    "test:rolluprun": "node lib",
+    "useFilesystem": "yarn add ../../forks/ecmascript2049/packages/es2049scripts --dev",
+    "usePublic": "yarn add es2049scripts --dev",
+    "test:clean": "rimraf config lib",
+    "test:usage": "./es2049scripts-test-usage",
+    "test": "npm-run-all test:clean default test:default current test:current latest test:latest rollup test:rollup test:rolluprun"
+  },
+  "keywords": [
+    "ECMAScript",
+    "ECMAScript 2049",
+    "ES.Next",
+    "JavaScript",
+    "Transpile"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/haraldrudell/ecmascript2049-test"
+  },
+  "devDependencies": {
+    "es2049scripts": "^0.0.8",
+    "npm-run-all": "^4.1.2",
+    "rimraf": "^2.6.2",
+    "run-all": "^1.0.1"
+  }
+}

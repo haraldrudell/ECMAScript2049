@@ -1,0 +1,31 @@
+#!/bin/bash -eu
+# © 2017-present Harald Rudell <harald.rudell@gmail.com> (http://www.haraldrudell.com)
+# This source code is licensed under the ISC-style license found in the LICENSE file in the root directory of this source tree.
+doCmd () {
+  echo "$*"
+  "$@"
+}
+
+for P in test-usage; do
+  if [ -e "$P" ]; then
+    doCmd rm -r "$P"
+  fi
+done
+doCmd mkdir -p test-usage
+doCmd cd test-usage
+doCmd yarn init --yes
+doCmd yarn add es2049scripts --dev
+node --eval "var pj = require('./package.json')
+var s = Object(pj).scripts || (pj.scripts = {})
+if (!s.start) s.start = 'es2049scripts -- node config'
+require('fs').writeFileSync('package.json', JSON.stringify(pj, null, '  '))"
+mkdir -p configes
+cat <<EOF >configes/index.mjs
+console.log('The next ReactJS version:')
+f()
+async function f () {
+  for await (let v of [Promise.resolve(17)])
+    console.log(v)
+}
+EOF
+doCmd yarn start

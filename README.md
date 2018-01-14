@@ -25,5 +25,5 @@
   <li><p><strong>ECMAScript 2049</strong> keeps developers and engineers happy and programming <strong>ECMAScript</strong> fun</li>
   <li><p><strong>ECMAScript 2049</strong> offers <strong>venture capital</strong> investment opportunities in new technology, as opposed to building companies on technology that is old and obsolete as in Node.js 6 ECMAScript from April 2016 or worse</li>
 </ul>
-<p>The doctype tags at the top are caused by github’s as of December 2017 knowingly failing to support standards-compliant html5 from 2014</p>
+<p>The doctype tags and such at the top are caused by github that in December 2017 restated their refusal to support standards-compliant html5, published in 2014</p>
 <p>© <a href=http://haralrudell.com>Harald Rudell</a> created <strong>ECMAScript 2049</strong> in December 2017. ISC License</p>
