@@ -14,23 +14,5 @@
 <strong><a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/workspace/packages/es2049package>es2049package</a></strong> providing zero-configuration libraries and command-line utilities based on RollupJS</p>
 
 <h2>Usage</h2>
-<pre><code><strong>git clone https://github.com/haraldrudell/ECMAScript2049.git
-cd ecmascript2049
-cd es2049scripts-test
-yarn install
-yarn test</strong>
-…
-$ node lib
-This file was transpiled with RollupJS and executed successfully.
-Done in 16.01s.
-</code></pre>
-<p>Linux/macOS-only testing of the usage example from readme:
-<pre><code><strong>yarn test:usage</strong>
-…
-yarn start
-$ es2049scripts -- node config
-The next ReactJS version:
-17
-Done in 40.09s.
-</code></pre>
+<p>This project is executed from <strong>es2049scripts</strong> using <code>yarn testProject</code> from that directory in a checked-out monolithic repository. This setup is because es2049scripts-test must be outside the workspace source tree.</p>
 <p>© <a href=http://haralrudell.com>Harald Rudell</a> created <strong>ECMAScript 2049</strong> in December 2017. ISC License</p>

@@ -8,6 +8,7 @@ import transformAsyncGeneratorFunctions from 'babel-plugin-transform-async-gener
 import transformClassProperties from 'babel-plugin-transform-class-properties'
 import transformEs2015ModulesCommonjs from 'babel-plugin-transform-es2015-modules-commonjs'
 import transformExportExtensions from 'babel-plugin-transform-export-extensions'
+/* 180113 simplify rollup
 import transformRuntime from 'babel-plugin-transform-runtime'
 import externalHelpers from 'babel-plugin-external-helpers'
 import resolve from 'resolve'
@@ -16,7 +17,7 @@ import path from 'path'
 
 const babelRuntimePath = resolve.sync('babel-runtime/package.json')
 const moduleName = path.dirname(babelRuntimePath)
-
+*/
 export default {
   development: {
     babelrc: false,
@@ -55,12 +56,10 @@ export default {
     babelrc: false,
     sourceMaps: true,
     presets: [
-      [env, {targets: {node: '4.8.1'}, modules: false}],
       stage0,
     ],
     plugins: [
-      externalHelpers,
-      [transformRuntime, {moduleName}],
+      transformClassProperties,
     ],
   },
 }

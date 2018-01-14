@@ -14,6 +14,7 @@
     "transpilezero:babel": "babel --out-file config/transpilezero.js --extensions .mjs transpilezero/transpile-zero.mjs transpilezero/ZeroTranspiler.mjs",
     "transpilezero:transpile": "node config/transpilezero",
     "testmjs": "node --experimental-modules src/esmodule.test.mjs",
+    "testProject": "node config/scripts-test",
     "test": "jest"
   },
   "babel": {

@@ -87,7 +87,8 @@ Done in 0.73s.
     Actions may be skipped based on modification date
   target-directory default: ./config
   args…  Any command with arguments to be launched on transpile complete</code></pre>
-<h2>How Does it Work?</h2>
+
+<h2>Internal Triple-Transpile</h2>
 <h3>Compiling ZeroTranspiler</h3>
 <p>The ZeroTranspiler class is written in <strong>ES.Next</strong> and is only used by es2049scripts developers. The <code>yarn transpilezero</code> command uses the <strong>babel-cli</strong> package to transpile to Node 6 ECMAScript . The output, <code>config/transpilezero.js</code> is checked in.
 <h3>Transpiling to config</h3>
@@ -96,11 +97,37 @@ Done in 0.73s.
 <p>The project is built in the usual way using the transpiled code in <code>config</code>
 <h3>Transpiling the Consuming Project</h3>
 <p>The consuming project invokes the <code>es2049scripts</code> executable that is built from the <strong>ES.Next</strong> code in <code>src</code>. The transpilation, typically into the consuming project’s config directory, uses modification dates to reduce work.
+
 <h2>Requirements</h2>
 <p>To develop or compile the <strong>ECMAScript 2049</strong> project <strong>Yarn</strong> 1+ and <strong>Node.js current</strong> (v8.5+) are required.</p>
-<p><code>yarn test</code> tests that the built executable is runnable.</p>
+<p><code>yarn test</code> tests that the built executable is runnable:</p>
+<pre><code><strong>yarn build</strong>
+…
+src/index.mjs → bin/es2049scripts...
+created bin/es2049scripts in 1.6s
+Done in 2.94s.
+<strong>yarn test</strong>
+…
+Ran all test suites.
+Done in 1.91s.
+</code></pre>
 <p><code>yarn testmjs</code> tests that experimental module support appears to be working.</p>
-<p>Additional tests are in the <a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/es2049scripts-test>ECMAScript2049-test</a> directory.</p>
+<p><code>yarn testProject</code> executes tests in the <strong>es2049scripts-test</strong> project:</p>
+<pre><code><strong>yarn testProject</strong>
+…
+yarn install
+…
+yarn test
+…
+This file was transpiled with RollupJS and executed successfully.
+…
+yarn start
+$ es2049scripts -- node config
+The next ReactJS version:
+17
+ScriptsTester.test: code transpiled by es2049scripts executed successfully.
+Done in 14.72s.
+</code></pre>
 <p>&emsp;</p>
 
 <p>© <a href=http://haraldrudell.com>Harald Rudell</a> created <strong>ECMAScript 2049</strong> in December 2017. ISC License</p>
