@@ -7,18 +7,17 @@
   "scripts": {
     "default": "es2049scripts envdefault config",
     "test:default": "npx node@6 config/envdefault2",
-    "current": "es2049scripts -debug -current envcurrent config",
+    "current": "es2049scripts -current envcurrent config",
     "test:current": "run-all 'node config/envcurrent' 'node config/envcurrent2' ",
-    "latest": "es2049scripts -debug -latest envlatest config",
+    "latest": "es2049scripts -latest envlatest config",
     "test:latest": "run-all 'node --experimental-modules config/envlatest' 'node --experimental-modules config/envlatest2' ",
-    "rollup": "es2049scripts -debug -rollup envrollup config",
+    "rollup": "es2049scripts -rollup envrollup config",
     "test:rollup": "rollup --config config/rollup.config.js",
     "test:rolluprun": "node lib",
-    "useFilesystem": "yarn add ../../forks/ecmascript2049/packages/es2049scripts --dev",
     "usePublic": "yarn add es2049scripts --dev",
-    "test:clean": "rimraf config lib",
-    "test:usage": "./es2049scripts-test-usage",
-    "test": "npm-run-all test:clean default test:default current test:current latest test:latest rollup test:rollup test:rolluprun"
+    "test:clean": "rimraf config lib node_modules test-usage",
+    "test:install": "yarn",
+    "test": "npm-run-all test:clean test:install default test:default current test:current latest test:latest rollup test:rollup test:rolluprun"
   },
   "keywords": [
     "ECMAScript",
@@ -32,9 +31,10 @@
     "url": "https://github.com/haraldrudell/ECMAScript2049"
   },
   "devDependencies": {
-    "es2049scripts": "^0.0.10",
+    "es2049scripts": "../../workspace/packages/es2049scripts",
     "npm-run-all": "^4.1.2",
     "rimraf": "^2.6.2",
-    "run-all": "^1.0.1"
+    "run-all": "^1.0.1",
+    "allspawn": "../../workspace/packages/allspawn"
   }
 }

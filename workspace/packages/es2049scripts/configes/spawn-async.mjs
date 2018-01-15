@@ -5,20 +5,46 @@ This source code is licensed under the ISC-style license found in the LICENSE fi
 import childProcess from 'child_process'
 const spawn = childProcess.spawn
 
-export default async function spawnAsync(cmd, args, options, cp) {
-  if (!cp) cp = {}
+export async function spawnAsync(cmd, args, options, cpReceiver) {
+  if (!cpReceiver) cpReceiver = {}
   return new Promise((resolve, reject) =>
-    cp.cp = spawn(cmd, args, {stdio: ['ignore', 'inherit', 'inherit'], ...options})
+    cpReceiver.cp = spawn(cmd, args, {stdio: ['ignore', 'inherit', 'inherit'], ...options})
       .once('close', (status, signal) => status === 0 && !signal && resolve(status) ||
         reject(getError(cmd, args, status, signal)))
-      .on('error', reject))
+      .on('error', e => reject(Object.assign(e, {cmd, args}))))
 }
 
-function getError(cmd, args, status, signal) {
+export async function spawnCapture(cmd, args, options) {
+  options = {...options, stdio: ['ignore', 'pipe', 'pipe']}
+  const {doPipe, stderrFails} = options
+  delete options.doPipe
+  delete options.stderrFails
+
+  const cpReceiver = {}
+  const p = spawnAsync(cmd, args, options, cpReceiver)
+
+  const texts = ['', '']
+  const listeners = texts.map((text, ix) => t => texts[ix] += t)
+  const {stdout: cpStdout, stderr: cpStderr} = cpReceiver.cp
+  const cpStreams = [cpStdout, cpStderr]
+  for (let [ix, cpStream] of cpStreams.entries()) cpStream.on('data', listeners[ix]).setEncoding('utf8')
+  if (doPipe) {
+    const {stdout, stderr} = process
+    for (let [ix, processStream] of [stdout, stderr].entries()) cpStreams[ix].pipe(processStream)
+  }
+
+  let e
+  await p.catch(er => e = er)
+  for (let [ix, cpStream] of cpStreams.entries()) cpStream.removeListener('data', listeners[ix])
+  if (e) throw e
+  const [stdout, stderr] = texts
+  if (stderrFails && stderr) throw Object.assign(new Error(`Output on standard error: ${cmd} ${args.join(' ')}: '${stderr}'`), {cmd, args, stdout, stderr})
+  return {stdout, stderr}
+}
+
+export function getError(cmd, args, status, signal) {
   let msg = `status code: ${status}`
   if (signal) msg += ` signal: ${signal}`
   msg += ` '${cmd} ${args.join(' ')}'`
-  const e = new Error(msg)
-  Object.assign(e, {status, signal, cmd, args})
-  return e
+  return Object.assign(new Error(msg), {cmd, args, status, signal})
 }

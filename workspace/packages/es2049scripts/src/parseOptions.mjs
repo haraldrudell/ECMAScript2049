@@ -5,27 +5,37 @@ This source code is licensed under the ISC-style license found in the LICENSE fi
 import path from 'path'
 
 export default function parseOptions({argv, name, version}) {
-  let argCount = 0
   const filenameProperties = ['from', 'to']
+  const targets = { // values are property names in babelenv.mjs
+    '-current': 'current',
+    '-active': 'active',
+    '-latest': 'latest',
+    '-rollup': 'rollup',
+  }
+  const help = [
+    `${name} [options] source-directory target-directory args…`,
+    `    version: ${version}`,
+    '  Transpiles from ES.Next to Node.js executable format',
+    '    Default target is Node.js 6.12.3 maintenance Long Term Support',
+    '    Transpiles .js and .mjs (may be renamed to .js), other files are copied',
+    '    Actions may be skipped based on modification date',
+    '',
+    '  -active  Target latest Node.js LTS: 8.9.4',
+    '  -current  Target the executing Node.js version, must be v8.6+, CommonJS modules',
+    '  -latest  Target the executing Node.js version --experimental-modules v8.6+',
+    '    Extension .mjs is kept on output',
+    '  -rollup  Target transpile of rollup.config.js: for buble with import',
+    '  --  Skip options parsing to args parameter',
+    '',
+    '  source-directory default: ./configes',
+    '  target-directory default: ./config',
+    '  args…  Any command with arguments to be launched on transpile complete',
+  ].join('\n')
+
   const filenames = {from: 'configes', to: 'config'}
   const options = {name}
   let args
-  const help =
-    `${name} [options] source-directory target-directory args…\n` +
-    `    version: ${version}\n` +
-    '  transpiles scripts from ES.Next to Node.js executable format\n' +
-    '    default target is Node.js 6 (Long Term Support)\n\n' +
-
-    '  -current  Target the executing Node.js version, that must be v8.6+, CommonJS modules\n' +
-    '  -latest  Target the executing Node.js version --experimental-modules v8.6+\n' +
-    '    Extension .mjs is kept on output\n' +
-    '  -rollup  Target transpile of rollup.config.js: Node.js v4.8.1 with import\n' +
-    '  --  Skip options parsing to args parameters\n\n' +
-    '  source-directory default: ./configes\n' +
-    '    Transpiles .js and .mjs (to .js), other files are copied\n' +
-    '    Actions may be skipped based on modification date\n' +
-    '  target-directory default: ./config\n' +
-    '  args…  Any command with arguments to be launched on transpile complete'
+  let argCount = 0
 
   for (let i = 0, arg = argv[i]; i < argv.length; arg = argv[++i]) switch (arg) {
     case '-h':
@@ -37,14 +47,11 @@ export default function parseOptions({argv, name, version}) {
     case '-debug':
       options.debug = true
       break
+    case '-acive':
     case '-current':
-      options.envName = 'current'
-      break
-    case '-rollup':
-      options.envName = 'rollup'
-      break
     case '-latest':
-      options.envName = 'latest'
+    case '-rollup':
+      options.envName = targets[arg]
       break
     case '--':
       args = argv.slice(++i)
@@ -69,8 +76,6 @@ export default function parseOptions({argv, name, version}) {
       }
       break
     }
-    for (let prop of filenameProperties) {
-      filenames[prop] = path.resolve(filenames[prop])
-    }
+    for (let prop of filenameProperties) filenames[prop] = path.resolve(filenames[prop])
     return {filenames, options, args}
 }

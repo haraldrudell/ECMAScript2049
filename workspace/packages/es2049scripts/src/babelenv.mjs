@@ -23,10 +23,17 @@ export default {
     babelrc: false,
     sourceMaps: true,
     presets: [
-      [env, {targets: {node: 6}}],
+      [env, {targets: {node: '6.10'}}],
       stage0,
     ]},
-/*    current: { // fails for export * from 'fs'
+  active: {
+      babelrc: false,
+      sourceMaps: true,
+      presets: [
+        [env, {targets: {node: '8.9.4'}}],
+        stage0,
+      ]},
+  /*    current: { // fails for export * from 'fs'
       babelrc: false,
       sourceMaps: true,
       presets: [

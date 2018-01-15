@@ -35,7 +35,8 @@
   <li><p><strong>es2049package</strong> package allows for configuration-free implementation of libraries and command-line utilities</p></li>
   <li><p>Runtime environments target:</p>
     <ul>
-      <li><p>Default: <strong>Node.js 6 LTS</strong>, the version currently used by many deployment environments as of December 31, 2017</p></li>
+      <li><p>Default: <strong>Node.js 6.10 LTS maintenance</strong>, the version currently used by many deployment environments as of December 31, 2017</p></li>
+      <li><p>Active: <strong>Node.js 8.9 LTS Active</strong></p></li>
       <li><p>Current: <strong>Node.js v8.6+</strong> executable using <strong>CommonJS</strong> module format</p></li>
       <li><p>Latest: <strong>Node.js v8.6+</strong> using native experimental modules with extension <strong>.mjs</strong></p></li>
       <li><p>Rollup: Pre-transpilation of <strong>RollupJS</strong> configuration data so that it, too, can be written is <strong>ES.Next</strong></p></li>
@@ -69,22 +70,24 @@ The next ReactJS version:
 Done in 0.73s.
 </code></pre></li>
 </ol>
-<p><strong>es2049scripts</strong> transpiles .js and .mjs to .js or .mjs with target options <strong>&#8209;current &#8209;latest &#8209;rollup.</strong></p>
+<p><strong>es2049scripts</strong> transpiles .js and .mjs to .js or .mjs with target options <strong>&#8209;current &#8209;active &#8209;latest &#8209;rollup.</strong></p>
 <p>For more information, use:</p>
 <pre><code>yarn es2049scripts &#8209;help</code></pre>
 <pre><code>es2049scripts [options] source-directory target-directory args…
-    version: 0.0.9
-  transpiles scripts from ES.Next to Node.js executable format
-    default target is Node.js 6 (Long Term Support)
+    version: 0.0.11
+  Transpiles from ES.Next to Node.js executable format
+    Default target is Node.js 6.12.3 maintenance Long Term Support
+    Transpiles .js and .mjs (may be renamed to .js), other files are copied
+    Actions may be skipped based on modification date
 &emsp;
-  -current  Target the executing Node.js version, that must be v8.6+, CommonJS modules
+  -active  Target latest Node.js LTS: 8.9.4
+  -current  Target the executing Node.js version, must be v8.6+, CommonJS modules
   -latest  Target the executing Node.js version --experimental-modules v8.6+
     Extension .mjs is kept on output
-  -rollup  Target transpile of rollup.config.js: Node.js v4.8.1 with import
-  --  Skip options parsing to args parameters
+  -rollup  Target transpile of rollup.config.js: for buble with import
+  --  Skip options parsing to args parameter
+&emsp;
   source-directory default: ./configes
-    Transpiles .js and .mjs (to .js), other files are copied
-    Actions may be skipped based on modification date
   target-directory default: ./config
   args…  Any command with arguments to be launched on transpile complete</code></pre>
 

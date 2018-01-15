@@ -4,7 +4,6 @@ import _Object$keys from 'babel-runtime/core-js/object/keys';
 © 2017-present Harald Rudell <harald.rudell@gmail.com> (http://www.haraldrudell.com)
 All rights reserved.
 */
-// the ECMAScript ES.Next version is in the configes directory
 import pjson from '../package.json';
 import nodeIgnores from './nodepackages';
 
@@ -28,8 +27,9 @@ for (var _i = 0; _i < _arr.length; _i++) {
 
 var src = 'src';
 var bin = 'bin';
+var indexMjs = 'index.mjs';
 var paths = {
-  srcIndexMjs: path.join(src, 'index.mjs'),
+  srcIndexMjs: path.join(src, indexMjs),
   binary: path.resolve(bin, pjson.name)
 };
 var includeExclude = { include: ['**/*.js', '**/*.mjs'], exclude: 'node_modules/**' };

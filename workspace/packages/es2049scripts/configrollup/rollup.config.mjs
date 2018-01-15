@@ -2,7 +2,6 @@
 © 2017-present Harald Rudell <harald.rudell@gmail.com> (http://www.haraldrudell.com)
 All rights reserved.
 */
-// the ECMAScript ES.Next version is in the configes directory
 import pjson from '../package.json'
 import nodeIgnores from './nodepackages'
 
@@ -24,8 +23,9 @@ for (let p of ['name']) {
 
 const src = 'src'
 const bin = 'bin'
+const indexMjs = 'index.mjs'
 const paths = {
-  srcIndexMjs: path.join(src, 'index.mjs'),
+  srcIndexMjs: path.join(src, indexMjs),
   binary: path.resolve(bin, pjson.name),
 }
 const includeExclude = {include: ['**/*.js', '**/*.mjs'], exclude: 'node_modules/**'}

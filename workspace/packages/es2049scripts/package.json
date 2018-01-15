@@ -1,6 +1,6 @@
 {
   "name": "es2049scripts",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "ECMAScript 2049: ES.Next on every line by triple-transpile by Harald Rudell: ERASE THE PAST",
   "author": "Harald Rudell <harald.rudell@gmail.com> (http://haraldrudell.com)",
   "license": "ISC",
@@ -8,11 +8,16 @@
     "es2049scripts": "bin/es2049scripts"
   },
   "scripts": {
-    "build": "node config",
-    "transpilezero": "npx npm-run-all transpilezero:eslint transpilezero:babel transpilezero:transpile",
-    "transpilezero:eslint": "eslint --ext .mjs transpilezero",
+    "build": "rollup --config config/rollup.config.js",
+    "transpilezero": "npm-run-all transpilezero:eslint transpilezero:clean transpilezero:babel transpilezero:transpile",
+    "transpilezero:eslint": "eslint --ext .mjs transpilezero configes configrollup",
+    "transpilezero:clean": "rimraf config/*",
     "transpilezero:babel": "babel --out-file config/transpilezero.js --extensions .mjs transpilezero/transpile-zero.mjs transpilezero/ZeroTranspiler.mjs",
     "transpilezero:transpile": "node config/transpilezero",
+    "reinstall": "npm-run-all reinstall:clean reinstall:install",
+    "reinstall:clean": "rimraf node_modules",
+    "reinstall:install": "yarn",
+    "clean": "rimraf bin",
     "testmjs": "node --experimental-modules src/esmodule.test.mjs",
     "testProject": "node config/scripts-test",
     "test": "jest"
@@ -55,6 +60,7 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "jest": "^22.0.4",
-    "npm-run-all": "^4.1.2"
+    "npm-run-all": "^4.1.2",
+    "rimraf": "^2.6.2"
   }
 }
