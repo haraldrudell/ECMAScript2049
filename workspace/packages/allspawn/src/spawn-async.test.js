@@ -23,8 +23,8 @@ test('Test package.json main commonJS export', async () => {
 
   const mainExports = require(main)
   expect(typeof mainExports).toBe('object')
-  const spawn = mainExports.default
-  expect(typeof spawn).toBe('function')
+  const spawnAsync = mainExports.spawnAsync
+  expect(typeof spawnAsync).toBe('function')
 })
 
 function getNonEmptyString(value, m) {

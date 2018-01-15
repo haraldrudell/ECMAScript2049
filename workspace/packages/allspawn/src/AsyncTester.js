@@ -2,31 +2,35 @@
 © 2017-present Harald Rudell <harald.rudell@gmail.com> (http://www.haraldrudell.com)
 This source code is licensed under the ISC-style license found in the LICENSE file in the root directory of this source tree.
 */
-import spawn from './spawn-async-js'
+import {spawnAsync, spawnCapture} from './spawn-async-js'
 
 import fs from 'fs-extra'
 
 import path from 'path'
 
 export default class AsyncTester {
-  testProjectDir = path.resolve('..', '..', '..', 'spawn-test')
+  packagesDir = path.resolve('..')
+  testsDir = path.join(this.packagesDir, '..', '..', 'tests')
+  testProjectDir = path.join(this.testsDir, 'allspawn-test')
   testUsage = 'test-usage'
   testUsageDir = path.join(this.testProjectDir, this.testUsage)
   packagePath = process.cwd()
   packagePathRel = path.relative(this.testUsageDir, this.packagePath)
   es2049scripts = 'es2049scripts'
+  allSpawn = 'allspawn'
   src = 'src'
   srcDir = path.join(this.testUsageDir, this.src)
   build = 'build'
   start = `es2049scripts -current ${this.src} ${this.build} node ${this.build}`
   indexMjs = 'index.mjs'
-  indexMjsCode =
-    "import spawn from 'asy-spawn'\n" +
-    "f()\n" +
-    "async function f () {\n" +
-    "  const v = await spawn('node', ['--print', '\"value is: \" + (1+2)'])\n" +
-    "  console.log(v)\n" +
-    "}\n"
+  indexMjsCode = [
+    `import {spawnAsync} from '${this.allSpawn}'`,
+    'f()',
+    'async function f () {',
+    '  await spawnAsync(\'node\', [\'--print\', \'"value is: " + (1+2)\'])',
+    '}',
+    '',
+  ].join('\n')
   indexMjsOutput = 'value is: 3'
 
   constructor(o) {
@@ -35,17 +39,17 @@ export default class AsyncTester {
   }
 
   async test() {
-    const {packagePathRel, es2049scripts, srcDir, indexMjs} = this
+    const {packagePathRel, es2049scripts, srcDir, indexMjs, indexMjsOutput} = this
     await this.getTestProjectDir()
     const testUsageDir = this.cwd = await this.getTestUsageDir()
+    console.log(`${this.m} TEST in directory: ${testUsageDir}`)
     await this.run('yarn', ['init', '--yes'])
-    await this.run('yarn', ['add', packagePathRel, es2049scripts, '--dev'])
+    await this.run('yarn', ['add', packagePathRel, es2049scripts, '--dev'], true, false)
     await this.ensureScriptsStart()
     await this.writeCode(srcDir, indexMjs)
 
-    const stdout = await this.run('yarn', ['start'], true)
-    const expected = this.indexMjsOutput
-    if (!stdout.includes(expected)) throw new Error(`${this.m} yarn start failed: output: '${stdout}' search: ${expected}`)
+    const {stdout} = await this.run('yarn', ['start'], true)
+    if (!stdout.includes(indexMjsOutput)) throw new Error(`${this.m} yarn start failed: output: '${stdout}' search: ${indexMjsOutput}`)
     console.log(`${this.m}.test: code transpiled by es2049scripts executed successfully.`)
   }
 
@@ -67,27 +71,11 @@ export default class AsyncTester {
     return fs.writeFile(path.join(dir, file), this.indexMjsCode)
   }
 
-  async run(cmd, args, getStdout) {
+  async run(cmd, args, getStdout, doPipe = true) {
     console.log(cmd, ...args)
     const {cwd} = this
-    if (!getStdout) return spawn(cmd, args, {cwd})
-
-    const cp = {}
-    const p = spawn(cmd, args, {cwd, stdio: ['ignore', 'pipe', 'inherit']}, cp)
-    const cmdStdout = cp.cp.stdout
-    const {stdout} = process
-    let output = ''
-    function dataLogger(d) {
-      output += d
-    }
-    cmdStdout.on('data', dataLogger)
-      .setEncoding('utf8')
-      .pipe(stdout)
-    let e
-    await p.catch(er => e = er)
-    cmdStdout.removeListener('data', dataLogger)
-    if (e) throw e
-    return output
+    if (!getStdout) return spawnAsync(cmd, args, {cwd})
+    else return spawnCapture(cmd, args, {cwd, stderrFails: true, doPipe})
   }
 
   async ensureScriptsStart() {

@@ -1,0 +1,43 @@
+{
+  "name": "allspawn",
+  "version": "0.0.1",
+  "description": "Async spawn by Harald Rudell",
+  "author": "Harald Rudell <harald.rudell@gmail.com> (http://haraldrudell.com)",
+  "license": "ISC",
+  "main": "lib/spawn-async",
+  "module": "lib/spawn-async.mjs",
+  "scripts": {
+    "build": "rollup --config node:es2049package",
+    "clean": "clean lib",
+    "reinstall": "npm-run-all reinstall:clean reinstall:install",
+    "reinstall:clean": "clean node_modules",
+    "reinstall:install": "yarn",
+    "testquick": "jest src/spawn-async.test.js",
+    "test": "jest"
+  },
+  "rollup": {
+    "input": "src/spawn-async.mjs",
+    "node": true
+  },
+  "devEngines": {
+    "node": "9.x"
+  },
+  "engines": {
+    "node": ">= 6"
+  },
+  "keywords": [
+    "spawn",
+    "cmd",
+    "command",
+    "execute"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/haraldrudell/ECMAScript2049"
+  },
+  "devDependencies": {
+    "es2049package": "^0.0.3",
+    "jest": "^22.0.6",
+    "npm-run-all": "^4.1.2"
+  }
+}
