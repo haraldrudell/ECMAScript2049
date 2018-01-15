@@ -25,7 +25,7 @@ export default class RollupConfigurator extends RollupPackageJson {
     if (pkg.print) console.log('package.json rollup.print true: verbose output')
 
     if (!configIsArray) { // input is undefined or non-empty string
-      if (!pkg.input) pkg.input = defaultInput
+      if (!pkg.input) pkg.input = this._getDefaultInput()
       if (!pkg.output) pkg.output = this._getDefaultOutput(pkg)
       Object.assign(pkg, {
         external: this._assembleExternal(pkg),
@@ -45,7 +45,7 @@ export default class RollupConfigurator extends RollupPackageJson {
           ? pkg.dependencyList || this._getDependencyList(true)
           : undefined
         const o = {
-          input: input ? this._getNonEmptyString(input, `${m}: input`) : defaultInput,
+          input: input ? this._getNonEmptyString(input, `${m}: input`) : this._getDefaultInput(),
           output: output ? this._getArrayObjectOrUndefined(output, `${m}: output`) : this._getElementOutput({main, module, name, mainFlag, moduleFlag, shebang}),
           external: this._assembleExternal({node, dependencyList, external}),
           name,
