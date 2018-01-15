@@ -39,8 +39,8 @@ export default class RollupPackageJson extends PackageJson {
     return dependencyList
   }
 
-  _getObjectStringOrUndefined(value) {
-    return typeof value === 'object' ? value : this._getStringOrUndefined(value)
+  _getObjectStringOrUndefined(value, name, defaultValue) {
+    return typeof value === 'object' ? value : this._getStringOrUndefined(value, name, defaultValue)
   }
 
   _getArrayObjectOrUndefined(output) {
