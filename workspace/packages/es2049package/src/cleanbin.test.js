@@ -3,7 +3,7 @@
 This source code is licensed under the ISC-style license found in the LICENSE file in the root directory of this source tree.
 */
 import pjson from '../package.json'
-import {spawnCapture} from 'asy-spawn'
+import {spawnCapture} from 'allspawn'
 
 import fs from 'fs-extra'
 

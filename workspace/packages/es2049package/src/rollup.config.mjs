@@ -61,7 +61,7 @@ function getConfig({input, output, external, targets, shebang, clean, print, nod
     this exludes for example node_modules in parent directories
     json is processed by the rollup plugin. If babel processes json, too, it will fail
     */
-    include: '**/*.js',
+    include: ['**/*.js', '**/*.mjs'],
   }
   let rollupBabelOptions
   let rollupResolveOptions
@@ -81,7 +81,7 @@ function getConfig({input, output, external, targets, shebang, clean, print, nod
       prefer builtins, like 'util' over same-named other modules
       */
       resolve(rollupResolveOptions = {
-        extensions: ['.js', '.json'],
+        extensions: ['.mjs', '.js', '.json'],
         customResolveOptions: {
           /*
           resolve https://www.npmjs.com/package/resolve
