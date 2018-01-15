@@ -1,6 +1,6 @@
 {
   "name": "es2049scripts",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "ECMAScript 2049: ES.Next on every line by triple-transpile by Harald Rudell: ERASE THE PAST",
   "author": "Harald Rudell <harald.rudell@gmail.com> (http://haraldrudell.com)",
   "license": "ISC",
@@ -10,9 +10,9 @@
   "scripts": {
     "build": "rollup --config config/rollup.config.js",
     "transpilezero": "npm-run-all transpilezero:eslint transpilezero:clean transpilezero:babel transpilezero:transpile",
-    "transpilezero:eslint": "eslint --ext .mjs transpilezero configes configrollup",
+    "transpilezero:eslint": "eslint --ext .mjs zerotranspiler configes configrollup",
     "transpilezero:clean": "rimraf config/*",
-    "transpilezero:babel": "babel --out-file config/transpilezero.js --extensions .mjs transpilezero/transpile-zero.mjs transpilezero/ZeroTranspiler.mjs",
+    "transpilezero:babel": "babel --out-file config/transpilezero.js --extensions .mjs zerotranspiler/transpile-zero.mjs zerotranspiler/ZeroTranspiler.mjs",
     "transpilezero:transpile": "node config/transpilezero",
     "reinstall": "npm-run-all reinstall:clean reinstall:install",
     "reinstall:clean": "rimraf node_modules",
@@ -36,6 +36,7 @@
   "dependencies": {
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.1.2",
+    "babel-plugin-dynamic-import-node": "^1.2.0",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-transform-async-generator-functions": "^6.24.1",
     "babel-plugin-transform-class-properties": "^6.24.1",

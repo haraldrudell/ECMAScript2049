@@ -26,6 +26,14 @@
     <code>yarn build</code></li>
 </ol>
 
+<p>ADVICE</p>
+<ul>
+  <li>If building a Node.js executable, set rollup.node: true in package.json, consider rollup.target: {node: 6}. Ensure main, module are set</li>
+  <li>If writing a command-line executable set rollup.shebang: true</li>
+  <li>It does work, here is a functional <a href=https://github.com/haraldrudell/ECMAScript2049/blob/master/workspace/packages/allspawn/package.json>package.json</a></li>
+  <li>If it seems mysterious, use rollup.print: true</li>
+</ul>
+
 <h3>Fields in package.json</h3>
 <p>Fields used are the rollup key as well as standard top-level keys name, main, module</p>
 <p>Rollup keys:</p>
@@ -45,13 +53,11 @@
 </ul>
 
 <h3>clean command</h3>
-<p>Intended to provide a <code>clean</code> scripts  command for used in package.json. Removes any files or directories provided on the command line, or with no argments from the rollup.clean field of package,json</p>
-<pre><code>"scripts": {
-  "clean": "clean"
-…
-"rollup": {
+<p>Intended to provide a <code>clean</code> command for use with <strong>yarn</strong>. Clean, when invoked using <code>yarn clean</code>, removes any files or directories provided to it as command-line arguments or if no argments from the rollup.clean field of package.json</p>
+<pre><code>"rollup": {
   "clean": "bin"
 …</code></pre>
+<p>or:</p>
 <pre><code>"scripts": {
   "clean": "clean lib bin"
 …

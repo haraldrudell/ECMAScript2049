@@ -5,9 +5,9 @@ This source code is licensed under the ISC-style license found in the LICENSE fi
 import babelEnv from './babelenv'
 
 import babel from 'babel-core'
+import fs from 'fs-extra'
 
 import path from 'path'
-import fs from 'fs-extra'
 import util from 'util'
 
 export default class ScriptTranspiler {
@@ -16,8 +16,10 @@ export default class ScriptTranspiler {
   envKeepMjs = 'latest'
 
   constructor(o) {
-    const {name, envName, debug} = o || false
-    const m = String(name || 'ScriptTranspiler')
+    if (!o) o = false
+    const m = String(o.name || 'ScriptTranspiler')
+    const debug = Boolean(o.debug)
+    const {envName} = o
     const env = this.getEnv(envName)
     const babelOptions = babelEnv[env]
     if (!babelOptions) throw new Error(`${m} Unknown Babel envName: '${env}'`)
@@ -30,12 +32,16 @@ export default class ScriptTranspiler {
       'babelEnv:', util.inspect(babelEnv, {depth: null, colors: true}))
   }
 
-  async transpile({from, to}) {
-    if (!await fs.pathExists(from) || !(await fs.stat(from)).isDirectory()) throw new Error(`${this.m} not directory: '${from}'`)
-    return this.transpileDirectory(from, to)
+  async transpile(o) {
+    if (!o) o = false
+    if (!o.to) throw new Error(`${this.m} to cannot be empty`)
+    const to = String(o.to)
+    const from = String(o.from || '')
+    if (!from || !await fs.pathExists(from) || !(await fs.stat(from)).isDirectory()) throw new Error(`${this.m} not directory: '${from}'`)
+    return this.transpileDirectory({from, to})
   }
 
-  async transpileDirectory(from, to, all) {
+  async transpileDirectory({from, to, all}) {
     this.debug && console.log(`${this.m}.transpileDirectory ${from}`)
     const [exists, entries] = await Promise.all([
       fs.pathExists(to),
@@ -45,23 +51,18 @@ export default class ScriptTranspiler {
       all = true
       await fs.ensureDir(to)
     }
+    return Promise.all(entries.map(entry => this.processEntry({entry, from, to, all})))
+  }
 
-    const ps = []
-    for (let entry of entries) {
-      const absolute = path.join(from, entry)
-      if ((await fs.stat(absolute)).isDirectory()) {
-        ps.push(this.transpileDirectory(absolute, path.join(to, entry), all))
-        continue
-      }
-      const ext = path.extname(entry)
-      const toExt = this.getToExt(ext)
-      const dest = path.join(to, ext === toExt ? entry : entry.slice(0, -ext.length) + toExt)
-      if (!all && !await this.needsUpdate(absolute, dest)) continue
-      ps.push(!this.shouldTranspile(ext)
-        ? fs.copy(absolute, dest)
-        : this.transpileFile(absolute, dest))
-    }
-    return Promise.all(ps)
+  async processEntry({entry, from, to, all}) {
+    const absolute = path.join(from, entry)
+    if ((await fs.stat(absolute)).isDirectory()) return this.transpileDirectory({from: absolute, to: path.join(to, entry), all})
+    const ext = path.extname(entry)
+    const toExt = this.getToExt(ext)
+    const dest = path.join(to, ext === toExt ? entry : entry.slice(0, -ext.length) + toExt)
+    if (all || await this.needsUpdate(absolute, dest)) return !this.shouldTranspile(ext)
+      ? fs.copy(absolute, dest)
+      : this.transpileFile(absolute, dest)
   }
 
   async transpileFile(from, to) {
@@ -76,7 +77,7 @@ export default class ScriptTranspiler {
   getEnv = env => String(env || process.env.BABEL_ENV || process.env.NODE_ENV || 'development')
 
   getPrintableEnv(env) {
-    if (env) return env
+    if (env) return String(env)
     const be = process.env.BABEL_ENV
     if (be) return `BABEL_ENV=${be}`
     const ne = process.env.NODE_ENV

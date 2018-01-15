@@ -90,6 +90,7 @@ Done in 0.73s.
   source-directory default: ./configes
   target-directory default: ./config
   args…  Any command with arguments to be launched on transpile complete</code></pre>
+<p>Note om Rollup: rollup reading fo configuraiton files does not support generators, therefore not async or dynamic imports. This means one cannot include ECMAScript containing generators for parsing, even if those are not used.</p>
 
 <h2>Internal Triple-Transpile</h2>
 <h3>Compiling ZeroTranspiler</h3>

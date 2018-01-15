@@ -7,6 +7,8 @@
   "scripts": {
     "default": "es2049scripts envdefault config",
     "test:default": "npx node@6 config/envdefault2",
+    "active": "es2049scripts envactive config",
+    "test:active": "npx node@8 config/envactive2",
     "current": "es2049scripts -current envcurrent config",
     "test:current": "run-all 'node config/envcurrent' 'node config/envcurrent2' ",
     "latest": "es2049scripts -latest envlatest config",
@@ -17,7 +19,7 @@
     "usePublic": "yarn add es2049scripts --dev",
     "test:clean": "rimraf config lib node_modules test-usage",
     "test:install": "yarn",
-    "test": "npm-run-all test:clean test:install default test:default current test:current latest test:latest rollup test:rollup test:rolluprun"
+    "test": "npm-run-all test:clean test:install default test:default active test:active current test:current latest test:latest rollup test:rollup test:rolluprun"
   },
   "keywords": [
     "ECMAScript",

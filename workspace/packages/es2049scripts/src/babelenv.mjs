@@ -8,6 +8,7 @@ import transformAsyncGeneratorFunctions from 'babel-plugin-transform-async-gener
 import transformClassProperties from 'babel-plugin-transform-class-properties'
 import transformEs2015ModulesCommonjs from 'babel-plugin-transform-es2015-modules-commonjs'
 import transformExportExtensions from 'babel-plugin-transform-export-extensions'
+import dynamicImportNode from 'babel-plugin-dynamic-import-node'
 /* 180113 simplify rollup
 import transformRuntime from 'babel-plugin-transform-runtime'
 import externalHelpers from 'babel-plugin-external-helpers'
@@ -25,6 +26,9 @@ export default {
     presets: [
       [env, {targets: {node: '6.10'}}],
       stage0,
+    ],
+    plugins: [
+      dynamicImportNode,
     ]},
   active: {
       babelrc: false,
@@ -32,6 +36,9 @@ export default {
       presets: [
         [env, {targets: {node: '8.9.4'}}],
         stage0,
+      ],
+      plugins: [
+          dynamicImportNode,
       ]},
   /*    current: { // fails for export * from 'fs'
       babelrc: false,
@@ -49,6 +56,7 @@ export default {
       transformClassProperties,
       transformEs2015ModulesCommonjs,
       transformExportExtensions,
+      dynamicImportNode,
     ]},
   latest: {
     babelrc: false,
@@ -58,6 +66,7 @@ export default {
       transformAsyncGeneratorFunctions,
       transformClassProperties,
       transformExportExtensions,
+      dynamicImportNode,
     ]},
   rollup: {
     babelrc: false,
@@ -67,6 +76,7 @@ export default {
     ],
     plugins: [
       transformClassProperties,
+      dynamicImportNode,
     ],
   },
 }
