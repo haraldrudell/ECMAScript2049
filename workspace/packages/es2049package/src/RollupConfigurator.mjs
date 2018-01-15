@@ -7,8 +7,9 @@ import RollupPackageJson from './RollupPackageJson'
 import nodeIgnores from './nodepackages'
 
 import path from 'path'
+import fs from 'fs-extra'
 
-const defaultInput = 'src/index.js'
+const defaultInputs = ['src/index.js', 'src/index.mjs']
 const defaultOutputDir = 'build'
 const cjsFormat = 'cjs'
 const esFormat = 'es'
@@ -117,6 +118,11 @@ export default class RollupConfigurator extends RollupPackageJson {
       if (!shebang) output.file += defaultExtension
     }
     return output
+  }
+
+  _getDefaultInput() {
+    for (let input of defaultInputs) if (fs.pathExistsSync(input)) return input
+    throw new Error(`RollupConfigurator cannot dertermine input: tried '${defaultInputs.join('\'\x20\'')}'`)
   }
 
   _hasExtension(filename) {

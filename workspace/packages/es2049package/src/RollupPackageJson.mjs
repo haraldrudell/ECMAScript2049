@@ -16,8 +16,8 @@ export default class RollupPackageJson extends PackageJson {
       print: this._getBoolean(print, 'rollup.print', false),
       clean: this._getArrayOfNonEmptyStringStringOrUndefined(clean, 'rollup.clean'),
       shebang: this._getBoolean(shebang, 'rollup.shebang', false),
-      node: this._getBoolean(node, 'rollup.node', false),
-      targets: this._getObjectStringOrUndefined(targets, 'rollup.targets', false),
+      node: this._getBoolean(node, 'rollup.node', true),
+      targets: this._getObjectStringOrUndefined(targets, 'rollup.targets', {node: '6.10'}),
       output: this._getArrayObjectOrUndefined(output),
       mainFlag: this._getBoolean(mainFlag, 'rollup.main', false),
       moduleFlag: this._getBoolean(moduleFlag, 'rollup.module', false),
@@ -29,7 +29,7 @@ export default class RollupPackageJson extends PackageJson {
 
   _getDependencyList(dependenciesFlag) {
     let dependencyList
-    if (dependenciesFlag) {
+    if (dependenciesFlag !== false) {
       const {json: {dependencies}} = this
       if (dependencies) {
         const list = Object.keys(dependencies)

@@ -28,8 +28,8 @@
 
 <p>ADVICE</p>
 <ul>
-  <li>If building a Node.js executable, set rollup.node: true in package.json, consider rollup.target: {node: 6}. Ensure main, module are set</li>
-  <li>If writing a command-line executable set rollup.shebang: true</li>
+  <li>If building a Node.js executable, consider newer than default  rollup.target: {node: '6.10'}. Ensure main, module are set</li>
+  <li>If writing a command-line executable set rollup.shebang: true and probably dependencies: false</li>
   <li>It does work, here is a functional <a href=https://github.com/haraldrudell/ECMAScript2049/blob/master/workspace/packages/allspawn/package.json>package.json</a></li>
   <li>If it seems mysterious, use rollup.print: true</li>
 </ul>
@@ -38,16 +38,16 @@
 <p>Fields used are the rollup key as well as standard top-level keys name, main, module</p>
 <p>Rollup keys:</p>
 <ul>
-  <li><strong>input</strong>: optional string or array, default <strong>src/index.js</strong>: the entry point used for compilation. If this is an array, it is of objects each describing a compilation with keys: <strong>input output dependencies main module external node print shebang targets</strong>. Those keys overrides the rollup keys.<ul>
+  <li><strong>input</strong>: optional string or array, default <strong>src/index.js</strong> or <strong>src/index.mjs</strong>: the entry point used for compilation. If this is an array, it is of objects each describing a compilation with keys: <strong>input output dependencies main module external node print shebang targets</strong>. Those keys overrides the rollup keys.<ul>
     <li><strong>main</strong>: boolean, default false. use main field as output
     <li><strong>module</strong>: boolean, default false. use module field as output</li>
   </ul></li>
-  <li><strong>output</strong>: optional array or object. A rollup object with file and format (cjs, es) properties</li>
-  <li><strong>external</strong>: optional string, array of string: list of packages that are to be external</li>
+  <li><strong>output</strong>: optional array or object. A rollup object with file and format (cjs, es) properties. default is according to main or module (or both), if none present it is './build/&lt;package-name>', used for command-line executables</li>
+  <li><strong>external</strong>: optional string, array of string: list of packages or filenames that are to be external</li>
   <li><strong>clean</strong>: string or list of strings, desribed below under clean command</li>
-  <li><strong>node</strong>: boolean default false. If true, the standard library are added as externals. Should nromally be used for all Node.js programs</li>
-  <li><strong>targets</strong>: optional string 'stable', 'current' or a target object as defined  by babelJS. default is stable.</li>
-  <li><strong>dependencies</strong>: optional list of package names that are considered external by RollupJS</li>
+  <li><strong>node</strong>: boolean default true. If true, the standard library are added as externals. Should normally be used for all Node.js programs</li>
+  <li><strong>targets</strong>: optional string 'stable', 'current' or a target object as defined  by babelJS. default is Node 6.10 LTS maintenance.</li>
+  <li><strong>dependencies</strong>: optional boolean default true whether dependencies in package.json should be external. Use false if building a self-contained executable.</li>
   <li><strong>print</strong>: boolean, default false. If true, diagnostic printouts</li>
   <li><strong>shebang</strong>: boolean, default false. If true: the output is an executable, with a shebang line and proper permissions.</li>
 </ul>
