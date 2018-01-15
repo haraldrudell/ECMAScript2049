@@ -113,8 +113,8 @@ export default class RollupConfigurator extends RollupPackageJson {
         else output = outputEs
     } else if (module) output = outputEs
     else {
-      output = path.join(defaultOutputDir, name)
-      if (!shebang) output += defaultExtension
+      output = {file: path.join(defaultOutputDir, name), format: cjsFormat}
+      if (!shebang) output.file += defaultExtension
     }
     return output
   }

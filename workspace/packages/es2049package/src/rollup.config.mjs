@@ -16,6 +16,11 @@ import eslint from 'rollup-plugin-eslint'
 import json from 'rollup-plugin-json'
 import shebangPlugin from 'rollup-plugin-shebang'
 
+import env from 'babel-preset-env'
+import stage0 from 'babel-preset-stage-0'
+import externalHelpers from 'babel-plugin-external-helpers'
+import transformRuntime from 'babel-plugin-transform-runtime'
+
 import util from 'util'
 import fs from 'fs'
 import path from 'path'
@@ -41,7 +46,6 @@ node: boolean
 mainFlag, moduleFlag: boolean, present for array configuration
 */
 function getConfig({input, output, external, targets, shebang, clean, print, nodelatest}) {
-  print = true
   const latestNode = targets && targets.node === 'current'
   const includeExclude = {
     /*
@@ -96,10 +100,10 @@ function getConfig({input, output, external, targets, shebang, clean, print, nod
         babelrc: false, // do not process package.json or .babelrc files, rollup has the canonical Babel configuraiton
         // bundle in Babel external helpers https://github.com/rollup/rollup-plugin-babel#usage
         runtimeHelpers: true,
-        presets: [['env', {modules: false, targets}], 'stage-0'],
+        presets: [[env, {modules: false, targets}], stage0],
         plugins: [
-          'external-helpers',
-        ].concat(!latestNode ? ['transform-runtime'] : [])
+          externalHelpers,
+        ].concat(!latestNode ? [transformRuntime] : [])
           .concat(print ? [printBabelFilenames] : []),
       }, includeExclude)), // only process files from the project
       /*
