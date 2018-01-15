@@ -75,7 +75,7 @@ export default class RollupConfigurator extends RollupPackageJson {
   _getTargets(targets, name) {
     if (targets === 'stable' || targets === undefined) targets = {node: nodeStable}
     else if (targets === 'current') targets = {node: 'current'}
-    else {
+    else if (targets !== 'mini') {
       const tt = typeof targets
       if (tt !== 'object') throw new Error(`${name} targets: not object 'stable' 'current' or undefined`)
     }

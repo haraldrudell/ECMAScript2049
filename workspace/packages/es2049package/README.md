@@ -46,7 +46,7 @@
   <li><strong>external</strong>: optional string, array of string: list of packages or filenames that are to be external</li>
   <li><strong>clean</strong>: string or list of strings, desribed below under clean command</li>
   <li><strong>node</strong>: boolean default true. If true, the standard library are added as externals. Should normally be used for all Node.js programs</li>
-  <li><strong>targets</strong>: optional string 'stable', 'current' or a target object as defined  by babelJS. default is Node 6.10 LTS maintenance.</li>
+  <li><strong>targets</strong>: optional string 'stable', 'current' or a target object as defined  by babelJS. default is Node 6.10 LTS maintenance. <strong>mini</strong> indicates Node.js 9+</li>
   <li><strong>dependencies</strong>: optional boolean default true whether dependencies in package.json should be external. Use false if building a self-contained executable.</li>
   <li><strong>print</strong>: boolean, default false. If true, diagnostic printouts</li>
   <li><strong>shebang</strong>: boolean, default false. If true: the output is an executable, with a shebang line and proper permissions.</li>

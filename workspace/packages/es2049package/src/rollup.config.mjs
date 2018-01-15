@@ -20,7 +20,10 @@ import env from 'babel-preset-env'
 import stage0 from 'babel-preset-stage-0'
 import externalHelpers from 'babel-plugin-external-helpers'
 import transformRuntime from 'babel-plugin-transform-runtime'
-
+import transformClassProperties from 'babel-plugin-transform-class-properties'
+import transformExportExtensions from 'babel-plugin-transform-export-extensions'
+import dynamicImportNode from 'babel-plugin-dynamic-import-node'
+import transformObjectRestSpread from 'babel-plugin-transform-object-rest-spread'
 import util from 'util'
 import fs from 'fs'
 import path from 'path'
@@ -47,6 +50,7 @@ mainFlag, moduleFlag: boolean, present for array configuration
 */
 function getConfig({input, output, external, targets, shebang, clean, print, nodelatest}) {
   const latestNode = targets && targets.node === 'current'
+  const isMini = targets === 'mini'
   const includeExclude = {
     /*
     default is to include all files, including outside of the project directory
@@ -98,12 +102,18 @@ function getConfig({input, output, external, targets, shebang, clean, print, nod
       babel(rollupBabelOptions = Object.assign({
         // rollup-plugin-babel https://www.npmjs.com/package/rollup-plugin-babel
         babelrc: false, // do not process package.json or .babelrc files, rollup has the canonical Babel configuraiton
+      }, isMini ? {} : {
         // bundle in Babel external helpers https://github.com/rollup/rollup-plugin-babel#usage
         runtimeHelpers: true,
-        presets: [[env, {modules: false, targets}], stage0],
-        plugins: [
-          externalHelpers,
-        ].concat(!latestNode ? [transformRuntime] : [])
+      }, {
+        presets: (isMini ? []
+          : [[env, {modules: false, targets}], stage0]),
+        plugins: (isMini ? [
+            dynamicImportNode,
+            transformClassProperties,
+            transformExportExtensions,
+            transformObjectRestSpread,
+          ] : [externalHelpers].concat(!latestNode ? [transformRuntime] : []))
           .concat(print ? [printBabelFilenames] : []),
       }, includeExclude)), // only process files from the project
       /*
