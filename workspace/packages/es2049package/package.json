@@ -1,6 +1,6 @@
 {
   "name": "es2049package",
-  "version": "0.0.7",
+  "version": "0.0.9",
   "description": "ECMAScript 2049 package: zero-configuration libraries and command-line utilies by Harald Rudell",
   "author": "Harald Rudell <harald.rudell@gmail.com> (http://haraldrudell.com)",
   "license": "ISC",
