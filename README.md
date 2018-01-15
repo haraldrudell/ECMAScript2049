@@ -1,7 +1,7 @@
 <!doctype html>
 <title>ECMAScript 2049 readme</title>
 <h1>ECMAScript 2049</h1>
-<img src="./assets/ECMAScript 2049.png" alt="ECMAScript 2049" />
+<img src="./workspace/packages/es2049scripts/assets/ECMAScript 2049.png" alt="ECMAScript 2049" />
 <p><strong>ERASE THE PAST</strong></p>
 <p>&emsp;</p>
 <p>© <a href=http://haralrudell.com>Harald Rudell</a> created <strong>ECMAScript 2049</strong> in December 2017. ISC License</p>
