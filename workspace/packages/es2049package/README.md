@@ -1,5 +1,5 @@
 <h1>ECMAScript 2049 Package</h1>
-<img src="./assets/ECMAScript 2049.png" alt="ECMAScript 2049" />
+<img src=https://raw.githubusercontent.com/haraldrudell/ECMAScript2049/HEAD/workspace/packages/es2049scripts/assets/ECMAScript%202049.png alt="ECMAScript 2049" />
 <p><strong>ERASE THE PAST</strong></p>
 <p>&emsp;</p>
 <p>© <a href=http://haraldrudell.com>Harald Rudell</a> created <strong>ECMAScript 2049</strong> in December 2017. ISC License</p>
@@ -16,14 +16,14 @@
 
 <h2>Usage</h2>
 <ol>
-  <li>Add <strong>es2049package</strong> to your project<br />
-    <code>yarn add es2049package --dev</code></li>
-  <li>Add <strong>build</strong> to the <code>scripts</code> entry of package.json:<br />
-    <pre><code>"scripts": {
-  "build": "rollup --config node:es2049package"
-  …</code></pre></li>
-  <li>Build:<br />
-    <code>yarn build</code></li>
+  <li><p>Add <strong>es2049package</strong> to your project</p>
+    <blockquote><strong>yarn add es2049package --dev</strong></blockquote></li>
+  <li><p>Add <strong>build</strong> to the <code>scripts</code> entry of package.json:</p>
+    <blockquote><strong>"scripts": {<br />
+    &emsp;"build": "rollup --config node:es2049package"<br />
+    …</strong></blockquote></li>
+  <li><p>Build:</p>
+    <blockquote><strong>yarn build</strong></blockquote></li>
 </ol>
 
 <p>ADVICE</p>
@@ -53,20 +53,20 @@
 </ul>
 
 <h3>clean command</h3>
-<p>Intended to provide a <code>clean</code> command for use with <strong>yarn</strong>. Clean, when invoked using <code>yarn clean</code>, removes any files or directories provided to it as command-line arguments or if no argments from the rollup.clean field of package.json</p>
-<pre><code>"rollup": {
-  "clean": "bin"
-…</code></pre>
+<p>Intended to provide a <em><strong>clean</em></strong> command for use with <strong>yarn</strong>. Clean, when invoked using <em><strong>yarn clean</em></strong>, removes any files or directories provided to it as command-line arguments or if no argments from the rollup.clean field of package.json</p>
+<blockquote><strong>"rollup": {<br />
+  &emsp;"clean": "bin"<br />
+  …</strong></blockquote>
 <p>or:</p>
-<pre><code>"scripts": {
-  "clean": "clean lib bin"
-…
-</code></pre>
+<blockquote><strong>"scripts": {<br />
+  &emsp;"clean": "clean lib bin"<br />
+  …</strong></blockquote>
 
 <h3>rollup command</h3>
 <p>The ability to use Rollup although it is a transitive dependency.</p>
 
 <h2>Requirements</h2>
 <p>To develop or compile the <strong>ECMAScript 2049</strong> project <strong>Yarn</strong> 1+ and <strong>Node.js current</strong> (v8.5+) are required.</p>
+<p>&emsp;</p>
 
 <p>© <a href=http://haraldrudell.com>Harald Rudell</a> created <strong>ECMAScript 2049</strong> in December 2017. ISC License</p>
