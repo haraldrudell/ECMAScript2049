@@ -66,6 +66,9 @@
     17<br />
     Done in 0.73s.</blockquote></li>
 </ol>
+<p>A package.json using es2049scripts can be found <strong><a href=https://github.com/haraldrudell/ECMAScript2049/blob/master/workspace/packages/es2049package/package.json>here</a></strong></p>
+
+<p>&emsp;</p>
 <p><strong>es2049scripts</strong> transpiles .js and .mjs to .js or .mjs with target options <strong>&#8209;current &#8209;active &#8209;latest &#8209;rollup.</strong></p>
 <p>For more information, use:</p>
 <blockquote><strong>yarn es2049scripts &#8209;help</strong><br />
