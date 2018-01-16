@@ -66,7 +66,7 @@
     17<br />
     Done in 0.73s.</blockquote></li>
 </ol>
-<p>A package.json using es2049scripts can be found <strong><a href=https://github.com/haraldrudell/ECMAScript2049/blob/master/workspace/packages/es2049package/package.json>here</a></strong></p>
+<p>A package.json using <strong>es2049scripts</strong> can be found <strong><a href=https://github.com/haraldrudell/ECMAScript2049/blob/master/workspace/packages/es2049package/package.json>here</a></strong></p>
 
 <p>&emsp;</p>
 <p><strong>es2049scripts</strong> transpiles .js and .mjs to .js or .mjs with target options <strong>&#8209;current &#8209;active &#8209;latest &#8209;rollup.</strong></p>
@@ -89,7 +89,7 @@
   &emsp;source-directory default: ./configes<br />
   &emsp;target-directory default: ./config<br />
   &emsp;args…  Any command with arguments to be launched on transpile complete</strong></blockquote>
-<p>Note om Rollup: rollup reading fo configuraiton files does not support generators, therefore not async or dynamic imports. This means one cannot include ECMAScript containing generators for parsing, even if those are not used.</p>
+<p>Note om Rollup: rollup reading of configuraiton files does not support generators, therefore not async or dynamic imports. This means one cannot include ECMAScript containing generators for parsing, even if those are not used.</p>
 
 <h2>Internal Triple-Transpile</h2>
 <h3>Compiling ZeroTranspiler</h3>
