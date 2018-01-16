@@ -1,5 +1,3 @@
-<!doctype html>
-<title>ECMAScript 2049 readme</title>
 <h1>ECMAScript 2049 Scripts</h1>
 <img src=https://raw.githubusercontent.com/haraldrudell/ECMAScript2049/HEAD/workspace/packages/es2049scripts/assets/ECMAScript%202049.png alt="ECMAScript 2049" />
 <p><strong>ERASE THE PAST</strong></p>
@@ -11,7 +9,7 @@
 <p>Repository links:<br />
 <strong><a href=https://github.com/haraldrudell/ECMAScript2049>ECMAScript 2049</a></strong> the monolithic repository<br />
 <strong><a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/workspace/packages/es2049package>es2049package</a></strong> compile libraries and command-line utilities configuration-free with RollupJS<br />
-<strong><a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/es2049scripts-test>allspawn</a></strong> async spawn utility</p>
+<strong><a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/workspace/packages/allspawn>allspawn</a></strong> async spawn utility</p>
 
 <h2>Benefits</h2>
 <ul>
