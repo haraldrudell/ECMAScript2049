@@ -38,7 +38,7 @@ export async function spawnCapture(cmd, args, options) {
   for (let [ix, cpStream] of cpStreams.entries()) cpStream.removeListener('data', listeners[ix])
   if (e) throw e
   const [stdout, stderr] = texts
-  if (stderrFails && stderr) throw Object.assign(new Error(`Output on standard error: ${cmd} ${args.join(' ')}: '${stderr}'`), {cmd, args, stdout, stderr})
+  if (stderrFails !== false && stderr) throw Object.assign(new Error(`Output on standard error: ${cmd} ${args.join(' ')}: '${stderr}'`), {cmd, args, stdout, stderr})
   return {stdout, stderr}
 }
 

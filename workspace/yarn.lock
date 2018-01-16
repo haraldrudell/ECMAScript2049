@@ -1401,46 +1401,6 @@ es-to-primitive@^1.1.1:
     is-date-object "^1.0.1"
     is-symbol "^1.0.1"
 
-es2049package@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/es2049package/-/es2049package-0.0.3.tgz#35feea966a1d06339238c25b7a97616386a0799d"
-  dependencies:
-    babel-core "^6.26.0"
-    rollup "^0.53.2"
-    rollup-plugin-babel "^3.0.3"
-    rollup-plugin-commonjs "^8.2.6"
-    rollup-plugin-eslint "^4.0.0"
-    rollup-plugin-json "^2.3.0"
-    rollup-plugin-node-resolve "^3.0.0"
-    rollup-plugin-shebang "^0.1.4"
-
-es2049scripts@0.0.11:
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/es2049scripts/-/es2049scripts-0.0.11.tgz#f975ca2729b4068de175352246a6c2caa592495c"
-  dependencies:
-    babel-core "^6.26.0"
-    babel-eslint "^8.1.2"
-    babel-plugin-external-helpers "^6.22.0"
-    babel-plugin-transform-async-generator-functions "^6.24.1"
-    babel-plugin-transform-class-properties "^6.24.1"
-    babel-plugin-transform-es2015-modules-commonjs "^6.26.0"
-    babel-plugin-transform-export-extensions "^6.22.0"
-    babel-plugin-transform-runtime "^6.23.0"
-    babel-preset-env "^1.6.1"
-    babel-preset-stage-0 "^6.24.1"
-    babel-runtime "^6.26.0"
-    eslint "^4.14.0"
-    eslint-plugin-babel "^4.1.2"
-    fs-extra "^5.0.0"
-    resolve "^1.5.0"
-    rollup "^0.53.2"
-    rollup-plugin-babel "^3.0.3"
-    rollup-plugin-commonjs "^8.2.6"
-    rollup-plugin-eslint "^4.0.0"
-    rollup-plugin-json "^2.3.0"
-    rollup-plugin-node-resolve "^3.0.0"
-    rollup-plugin-shebang "^0.1.4"
-
 escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"

@@ -20,7 +20,7 @@
 
 <p><strong>{stdout, stderr} async spawnCapture(cmd, args, options)</strong><br />
 <strong>cmd</strong>, <strong>args</strong>, <strong>options</strong> as for <strong>SpawnAsync</strong> with addition:<br />
-<strong>options.stderrFails</strong>: boolean, default False: echo to stderr throws Error<br />
+<strong>options.stderrFails</strong>: boolean, default true: echo to stderr throws Error<br />
 <strong>options.doPipe</strong>: boolean, default false: pipe the process’ stdout and stderr to the terminal. If not provided, no echo from the process is displayed<br />
 <strong>return value</strong>: The promise resolves to an object with two string properties <strong>stdout</strong> and <strong>stderr</strong></p>
 <p>&emsp;</p>

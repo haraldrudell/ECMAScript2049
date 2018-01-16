@@ -1,6 +1,6 @@
 {
   "name": "allspawn",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Async spawn by Harald Rudell",
   "author": "Harald Rudell <harald.rudell@gmail.com> (http://haraldrudell.com)",
   "license": "ISC",
@@ -39,7 +39,7 @@
     "url": "https://github.com/haraldrudell/ECMAScript2049"
   },
   "devDependencies": {
-    "es2049package": "^0.0.3",
+    "es2049package": "^0.0.13",
     "jest": "^22.0.6",
     "npm-run-all": "^4.1.2"
   }
