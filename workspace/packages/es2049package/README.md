@@ -33,6 +33,7 @@
   <li>It does work, here is a functional <a href=https://github.com/haraldrudell/ECMAScript2049/blob/master/workspace/packages/allspawn/package.json>package.json</a></li>
   <li>If it seems mysterious, use rollup.print: true</li>
 </ul>
+<p>A package.json using <strong>es2049package</strong> can be found <strong><a href=https://github.com/haraldrudell/ECMAScript2049/blob/master/workspace/packages/allspawn/package.json>here</a></strong></p>
 
 <h3>Fields in package.json</h3>
 <p>Fields used are the rollup key as well as standard top-level keys name, main, module</p>
