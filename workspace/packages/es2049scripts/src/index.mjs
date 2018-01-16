@@ -8,26 +8,35 @@ import launch from './launcher'
 import pjson from '../package.json'
 import parseOptions from './parseOptions'
 
-const nameField = Object(pjson).name
-const verField = Object(pjson).version
-const m = String(nameField || 'src/index')
+const defName = 'es2049scripts'
+const defVersion = 'unknown version'
+const defMarker = 'src/index'
+
+const pjName = Object(pjson).name
+const pjVersion = Object(pjson).version
+
+const m = String(pjName || defMarker)
 let debug
 
-run(String(nameField || 'es2049scripts'), String(verField || 'unknown version'), process.argv.slice(2)).catch(errorHandler)
+run().catch(onRejected)
 
-async function run(name, version, argv) {
+async function run() {
+  const argv = process.argv.slice(2)
+  const name = String(pjName || defName)
+  const version = String(pjVersion || defVersion)
   const {filenames, options, args} = parseOptions({argv, name, version})
-  options.debug && (debug = true)
-  debug && console.log(`${name}.run:`, options, filenames)
+  options.debug && (debug = true) && console.log(`${name}.run:`, options, filenames)
+
   await new ScriptTranspiler(options).transpile(filenames)
+
   if (args) {
-    debug && console.log(`${name}.launch:`, args.join(' '))
+    debug && console.log(`${name}.launch:`, ...args)
     return launch({cmd: args.shift(), args})
   }
 }
 
-function errorHandler(e) {
-  debug && console.error(`${m} error handler:`)
+function onRejected(e) {
+  debug && console.error(`${m} onRejected:`)
   if (!(e instanceof Error)) e = new Error(`Error value: ${typeof e} ${e}`)
   console.error(!debug ? e.message : e)
   process.exit(1)

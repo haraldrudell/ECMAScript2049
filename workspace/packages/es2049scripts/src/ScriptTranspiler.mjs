@@ -71,7 +71,7 @@ export default class ScriptTranspiler {
       `to ${path.relative(cwd, to)} `)
     const {code/*, map, ast*/} = await new Promise((resolve, reject) =>
       babel.transformFile(from, babelOptions, (e, r) => !e ? resolve(r) : reject(e)))
-    await fs.writeFile(to, code)
+    return fs.writeFile(to, code)
   }
 
   getEnv = env => String(env || process.env.BABEL_ENV || process.env.NODE_ENV || 'development')

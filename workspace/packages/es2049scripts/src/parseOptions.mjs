@@ -12,25 +12,31 @@ export default function parseOptions({argv, name, version}) {
     '-latest': 'latest',
     '-rollup': 'rollup',
   }
-  const help = [
-    `${name} [options] source-directory target-directory args…`,
-    `    version: ${version}`,
-    '  Transpiles from ES.Next to Node.js executable format',
-    '    Default target is Node.js 6.12.3 maintenance Long Term Support',
-    '    Transpiles .js and .mjs (may be renamed to .js), other files are copied',
-    '    Actions may be skipped based on modification date',
-    '',
-    '  -active  Target latest Node.js LTS: 8.9.4',
-    '  -current  Target the executing Node.js version, must be v8.6+, CommonJS modules',
-    '  -latest  Target the executing Node.js version --experimental-modules v8.6+',
-    '    Extension .mjs is kept on output',
-    '  -rollup  Target transpile of rollup.config.js: for buble with import',
-    '  --  Skip options parsing to args parameter',
-    '',
-    '  source-directory default: ./configes',
-    '  target-directory default: ./config',
-    '  args…  Any command with arguments to be launched on transpile complete',
-  ].join('\n')
+
+  function exit(msg, statusCode = 2) {
+    const logFn = statusCode ? console.error : console.log
+    msg && logFn(`${msg}\n`)
+    logFn([
+      `${name} [options] source-directory target-directory args…`,
+      `    version: ${version}`,
+      '  Transpiles from ES.Next to Node.js executable format',
+      '    Default target is Node.js 6.12.3 maintenance Long Term Support',
+      '    Transpiles .js and .mjs (may be renamed to .js), other files are copied',
+      '    Actions may be skipped based on modification date',
+      '',
+      '  -active  Target latest Node.js LTS: 8.9.4',
+      '  -current  Target the executing Node.js version, must be v8.6+, CommonJS modules',
+      '  -latest  Target the executing Node.js version --experimental-modules v8.6+',
+      '    Extension .mjs is kept on output',
+      '  -rollup  Target transpile of rollup.config.js: for buble with import',
+      '  --  Skip options parsing to args parameter',
+      '',
+      '  source-directory default: ./configes',
+      '  target-directory default: ./config',
+      '  args…  Any command with arguments to be launched on transpile complete',
+    ].join('\n'))
+    process.exit(statusCode)
+  }
 
   const filenames = {from: 'configes', to: 'config'}
   const options = {name}
@@ -41,8 +47,7 @@ export default function parseOptions({argv, name, version}) {
     case '-h':
     case '-help':
     case '--help':
-      console.log(help)
-      process.exit(0)
+      exit(null, 0)
       // eslint-disable-line no-fallthrough
     case '-debug':
       options.debug = true
@@ -58,14 +63,8 @@ export default function parseOptions({argv, name, version}) {
       i = argv.length
       break
     default:
-      let optErr
-      if (arg.startsWith('-')) optErr = `Unknown option: '${arg}'\n`
-      else if (!arg) optErr = 'Directory name cannot be empty'
-      if (optErr) {
-        console.error(optErr)
-        console.error(help)
-        process.exit(2)
-      }
+      if (arg.startsWith('-')) exit(`Unknown option: '${arg}'\n`)
+      if (!arg) exit('Directory name cannot be empty')
 
       if (argCount < 2) {
         const filenameProperty = filenameProperties[argCount++]

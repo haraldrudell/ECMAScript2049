@@ -8,9 +8,10 @@ This source code is licensed under the ISC-style license found in the LICENSE fi
 const m = 'transpile-zero'
 let debug
 
-run(process.argv.slice(2)).catch(onRejected)
+run().catch(onRejected)
 
-async function run(argv) {
+async function run() {
+  const argv = process.argv.slice(2)
   debug = argv[0] === '-debug'
   // babel will concatenate this script with ./ZeroTranspiler
   // package.json scripts.transpilezero:babel
@@ -19,7 +20,7 @@ async function run(argv) {
 }
 
 function onRejected(e) {
-  debug && console.error(`${m} error handler:`)
+  debug && console.error(`${m} onRejected:`)
   if (!(e instanceof Error)) e = new Error(`Error value: ${typeof e} ${e}`)
   console.error(!debug ? e.message : e)
   process.exit(1)

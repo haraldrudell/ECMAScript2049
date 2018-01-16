@@ -9,7 +9,8 @@ var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
 let run = (() => {
-  var _ref = (0, _asyncToGenerator3.default)(function* (argv) {
+  var _ref = (0, _asyncToGenerator3.default)(function* () {
+    const argv = process.argv.slice(2);
     debug = argv[0] === '-debug';
     // babel will concatenate this script with ./ZeroTranspiler
     // package.json scripts.transpilezero:babel
@@ -17,7 +18,7 @@ let run = (() => {
     return new ZeroTranspiler({ debug }).transpile();
   });
 
-  return function run(_x) {
+  return function run() {
     return _ref.apply(this, arguments);
   };
 })();
@@ -34,10 +35,10 @@ This source code is licensed under the ISC-style license found in the LICENSE fi
 const m = 'transpile-zero';
 let debug;
 
-run(process.argv.slice(2)).catch(onRejected);
+run().catch(onRejected);
 
 function onRejected(e) {
-  debug && console.error(`${m} error handler:`);
+  debug && console.error(`${m} onRejected:`);
   if (!(e instanceof Error)) e = new Error(`Error value: ${typeof e} ${e}`);
   console.error(!debug ? e.message : e);
   process.exit(1);
@@ -140,7 +141,7 @@ class ZeroTranspiler {
     return filename.endsWith(mjs) ? filename.slice(0, -mjs.length) + js : filename;
   }
 
-  getBabelCmd(from, to, isFile) {
+  getBabelCmd(from, to) {
     return ['babel', ['--out-file', to, from]];
   }
 

@@ -51,7 +51,7 @@ export default class ZeroTranspiler {
       : filename
   }
 
-  getBabelCmd(from, to, isFile) {
+  getBabelCmd(from, to) {
     return ['babel', ['--out-file', to, from]]
   }
 
