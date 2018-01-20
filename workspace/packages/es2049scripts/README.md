@@ -89,7 +89,7 @@
   &emsp;source-directory default: ./configes<br />
   &emsp;target-directory default: ./config<br />
   &emsp;args…  Any command with arguments to be launched on transpile complete</strong></blockquote>
-<p>Note om Rollup: rollup reading of configuraiton files does not support generators, therefore not async or dynamic imports. This means one cannot include ECMAScript containing generators for parsing, even if those are not used.</p>
+<p>Note om Rollup: rollup reading of configuration files does not support generators, therefore not async or dynamic imports. This means one cannot include ECMAScript containing generators for parsing, even if those are not used.</p>
 
 <h2>Internal Triple-Transpile</h2>
 <h3>Compiling ZeroTranspiler</h3>

@@ -27,9 +27,7 @@ export default {
       [env, {targets: {node: '6.10'}}],
       stage0,
     ],
-    plugins: [
-      dynamicImportNode,
-    ]},
+    plugins: [dynamicImportNode]},
   active: {
       babelrc: false,
       sourceMaps: true,
@@ -37,9 +35,7 @@ export default {
         [env, {targets: {node: '8.9.4'}}],
         stage0,
       ],
-      plugins: [
-          dynamicImportNode,
-      ]},
+      plugins: [dynamicImportNode]},
   /*    current: { // fails for export * from 'fs'
       babelrc: false,
       sourceMaps: true,
@@ -71,9 +67,7 @@ export default {
   rollup: {
     babelrc: false,
     sourceMaps: true,
-    presets: [
-      stage0,
-    ],
+    presets: [stage0],
     plugins: [
       transformClassProperties,
       dynamicImportNode,

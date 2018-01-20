@@ -13,7 +13,8 @@ export default function parseOptions({argv, name, version}) {
     '-rollup': 'rollup',
   }
 
-  function exit(msg, statusCode = 2) {
+  function exit(msg) {
+    const statusCode = msg ? 2 : 0
     const logFn = statusCode ? console.error : console.log
     msg && logFn(`${msg}\n`)
     logFn([
@@ -47,12 +48,12 @@ export default function parseOptions({argv, name, version}) {
     case '-h':
     case '-help':
     case '--help':
-      exit(null, 0)
+      exit()
       // eslint-disable-line no-fallthrough
     case '-debug':
       options.debug = true
       break
-    case '-acive':
+    case '-active':
     case '-current':
     case '-latest':
     case '-rollup':
