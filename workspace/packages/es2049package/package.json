@@ -1,6 +1,6 @@
 {
   "name": "es2049package",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "ECMAScript 2049 package: zero-configuration libraries and command-line utilies by Harald Rudell",
   "author": "Harald Rudell <harald.rudell@gmail.com> (http://haraldrudell.com)",
   "license": "ISC",
@@ -34,11 +34,13 @@
     "allspawn": "^0.0.4",
     "es2049scripts": "^0.0.15",
     "jest": "^22.0.6",
+    "js-yaml": "^3.10.0",
     "npm-run-all": "^4.1.2",
     "rimraf": "^2.6.2"
   },
   "dependencies": {
     "babel-core": "^6.26.0",
+    "babel-eslint": "^8.2.1",
     "babel-plugin-dynamic-import-node": "^1.2.0",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-transform-class-properties": "^6.24.1",

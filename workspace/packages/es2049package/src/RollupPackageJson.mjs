@@ -8,7 +8,7 @@ import PackageJson from './PackageJson'
 export default class RollupPackageJson extends PackageJson {
   getRollupFromJson() {
     const {json: {name, main, module, rollup: ro}} = this
-    const {input, output, dependencies: dependenciesFlag, main: mainFlag, module: moduleFlag, shebang, clean, external, print, node, targets} = ro || {}
+    const {input, output, dependencies: dependenciesFlag, main: mainFlag, module: moduleFlag, shebang, clean, external, print, node, targets, eslint} = ro || {}
     return {
       name: this._getNonEmptyString(name, 'name'),
       main: this._getStringOrUndefined(main, 'main'),
@@ -24,6 +24,7 @@ export default class RollupPackageJson extends PackageJson {
       input: this._getArrayStringOrUndefined(input),
       external: this._getArrayOfNonEmptyStringStringOrUndefined(external, 'rollup.external'),
       dependencyList: this._getDependencyList(dependenciesFlag),
+      eslint: this._getBoolean(eslint, 'rollup.eslint'),
     }
   }
 

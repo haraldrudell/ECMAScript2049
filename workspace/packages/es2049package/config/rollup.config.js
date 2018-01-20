@@ -5,6 +5,7 @@ This source code is licensed under the ISC-style license found in the LICENSE fi
 import pjson from '../package.json';
 import nodeIgnores from '../src/nodepackages.mjs';
 import babelPrintFilename from '../src/babelPrintFilename.mjs';
+import { convertYaml } from './convertYaml';
 
 import babel from 'rollup-plugin-babel';
 import chmod from '../src/chmodPlugin.mjs';
@@ -14,20 +15,19 @@ import json from 'rollup-plugin-json';
 import resolve from 'rollup-plugin-node-resolve';
 import shebangPlugin from 'rollup-plugin-shebang';
 
+import path from 'path';
 import util from 'util';
 
 const srcRollupConfig = 'src/rollup.config.mjs';
 
 const print = !!process.env.DEBUG;
 
-export default [{ input: srcRollupConfig, output: { file: pjson.main, format: 'cjs' }, options: { dependencies: true } }, { input: srcRollupConfig, output: { file: pjson.module, format: 'es' }, options: { dependencies: true } }, { input: 'src/cleanbin.mjs', output: { file: 'bin/clean', format: 'cjs' }, options: { shebang: true } }, { input: 'src/rollup.mjs', output: { file: 'bin/rollup', format: 'cjs' }, options: { shebang: true } }].map(getConfig);
+convertYaml(path.resolve('src', 'eslintrc.yaml'), path.resolve('src', 'eslintrc.json'));
 
-//export default new RollupConfigurator().assembleConfig(getConfig)
+export default [{ input: srcRollupConfig, output: { file: pjson.main, format: 'cjs' }, options: { dependencies: true } }, { input: srcRollupConfig, output: { file: pjson.module, format: 'es' }, options: { dependencies: true } }, { input: 'src/cleanbin.mjs', output: { file: 'bin/clean', format: 'cjs' }, options: { shebang: true } }, { input: 'src/rollup.mjs', output: { file: 'bin/rollup', format: 'cjs' }, options: { shebang: true } }].map(getConfig);
 
 function getConfig(config0) {
   const { options: { shebang, dependencies }, input, output } = config0;
-
-  //{input, main, module, output, external, shebang, clean, print}) {
   const includeExclude = {
     include: ['**/*.js', '**/*.mjs'],
     exclude: 'node_modules/**'
@@ -42,7 +42,7 @@ function getConfig(config0) {
       babelrc: false, // unlike babel-node, rollup fails if an es2015 module transformer is included
       runtimeHelpers: true,
       presets: [['env', { modules: false, targets: { node: '4.8.1' } }]],
-      plugins: ['transform-runtime'].concat(print ? babelPrintFilename : [])
+      plugins: ['transform-object-rest-spread', 'transform-runtime'].concat(print ? babelPrintFilename : [])
     }, includeExclude)), commonjs()].concat(shebang ? [shebangPlugin(), chmod()] : [])
   };
 

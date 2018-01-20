@@ -6,10 +6,12 @@ This source code is licensed under the ISC-style license found in the LICENSE fi
 import RollupPackageJson from './RollupPackageJson'
 import nodeIgnores from './nodepackages'
 
-import path from 'path'
 import fs from 'fs-extra'
 
+import path from 'path'
+
 const defaultInputs = ['src/index.js', 'src/index.mjs']
+const eslintFiles = ['.eslintrc.json', '.eslintrc.yaml']
 const defaultOutputDir = 'build'
 const cjsFormat = 'cjs'
 const esFormat = 'es'
@@ -18,7 +20,7 @@ const nodeStable = '4.8'
 
 export default class RollupConfigurator extends RollupPackageJson {
   assembleConfig(getConfig) {
-    const pkg = this.getRollupFromJson() // package.json file cannot be imported because it is located by runtie cwd
+    const pkg = this.getRollupFromJson() // package.json file cannot be imported because it is located by runtime cwd
     const configIsArray = Array.isArray(pkg.input)
     const config = configIsArray ? [] : {}
 
@@ -40,7 +42,7 @@ export default class RollupConfigurator extends RollupPackageJson {
         const {input, output, dependencies,
           main: mainFlag, module: moduleFlag,
           external = pkg.external,
-          node = pkg.node, print = pkg.print, shebang = pkg.shebang, targets = pkg.targets} = inputElement || false
+          node = pkg.node, print = pkg.print, shebang = pkg.shebang, targets = pkg.targets, eslint = pkg.eslint} = inputElement || false
         const dependencyList = dependencies
           ? pkg.dependencyList || this._getDependencyList(true)
           : undefined
@@ -58,6 +60,7 @@ export default class RollupConfigurator extends RollupPackageJson {
           mainFlag: this._getBoolean(mainFlag, `${m}: main`),
           moduleFlag: this._getBoolean(moduleFlag, `${m}: module`),
           node: this._getBoolean(node, `${m}: node`),
+          eslint: this._getEslint(eslint, `${m}: eslint`),
         }
         config.push(getConfig(o))
         clean = false
@@ -81,6 +84,7 @@ export default class RollupConfigurator extends RollupPackageJson {
     }
     return targets
   }
+
   _assembleExternal({node, dependencyList, external: ex}) {
     let external = [] // use array b/c elements has to be added to Set one by one
     if (ex)
@@ -89,6 +93,12 @@ export default class RollupConfigurator extends RollupPackageJson {
     if (node) Array.prototype.push.apply(external, nodeIgnores)
     if (dependencyList) Array.prototype.push.apply(external, dependencyList)
     return external.length ? Array.from(new Set(external)).sort() : undefined
+  }
+
+  _getEslint(eslint) {
+    return eslint === true || eslint === false
+      ? eslint
+      : eslintFiles.every(file => !path.fileExistsSync(path.resolve(file))) // if none exists: true
   }
 
   _getElementOutput({main, module, name, mainFlag, moduleFlag, shebang}) {

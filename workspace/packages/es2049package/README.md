@@ -39,7 +39,7 @@
 <p>Fields used are the rollup key as well as standard top-level keys name, main, module</p>
 <p>Rollup keys:</p>
 <ul>
-  <li><strong>input</strong>: optional string or array, default <strong>src/index.js</strong> or <strong>src/index.mjs</strong>: the entry point used for compilation. If this is an array, it is of objects each describing a compilation with keys: <strong>input output dependencies main module external node print shebang targets</strong>. Those keys overrides the rollup keys.<ul>
+  <li><strong>input</strong>: optional string or array, default <strong>src/index.js</strong> or <strong>src/index.mjs</strong>: the entry point used for compilation. If this is an array, it is of objects each describing a compilation with keys: <strong>input output dependencies main module external node print shebang targets eslint</strong>. Those keys overrides the rollup keys.<ul>
     <li><strong>main</strong>: boolean, default false. use main field as output
     <li><strong>module</strong>: boolean, default false. use module field as output</li>
   </ul></li>
@@ -51,6 +51,7 @@
   <li><strong>dependencies</strong>: optional boolean default true whether dependencies in package.json should be external. Use false if building a self-contained executable.</li>
   <li><strong>print</strong>: boolean, default false. If true, diagnostic printouts</li>
   <li><strong>shebang</strong>: boolean, default false. If true: the output is an executable, with a shebang line and proper permissions.</li>
+  <li><strong>eslint</strong>: boolean, default true if './.eslintrc.json' and './eslintrc.yaml' ars missing. If true: A default eslint configuration based on babel-eslint is provided.</li>
 </ul>
 
 <h3>clean command</h3>

@@ -2,12 +2,12 @@
 © 2017-present Harald Rudell <harald.rudell@gmail.com> (http://www.haraldrudell.com)
 This source code is licensed under the ISC-style license found in the LICENSE file in the root directory of this source tree.
 */
-// ECMAScipt 2015 as supported by rollup. No class properties, async generators or object spread operator
 import RollupConfigurator from './RollupConfigurator'
 import chmod from './chmodPlugin'
 import warningsMuffler from './warningsMuffler'
 import cleanPlugin from './cleanPlugin'
 import printBabelFilenames from './babelPrintFilename'
+import eslintJson from './eslintrc.json'
 
 import babel from 'rollup-plugin-babel'
 import resolve from 'rollup-plugin-node-resolve'
@@ -16,6 +16,7 @@ import eslint from 'rollup-plugin-eslint'
 import json from 'rollup-plugin-json'
 import shebangPlugin from 'rollup-plugin-shebang'
 
+import babelEslint from 'babel-eslint'
 import env from 'babel-preset-env'
 import stage0 from 'babel-preset-stage-0'
 import externalHelpers from 'babel-plugin-external-helpers'
@@ -24,31 +25,17 @@ import transformClassProperties from 'babel-plugin-transform-class-properties'
 import transformExportExtensions from 'babel-plugin-transform-export-extensions'
 import dynamicImportNode from 'babel-plugin-dynamic-import-node'
 import transformObjectRestSpread from 'babel-plugin-transform-object-rest-spread'
+
 import util from 'util'
 import fs from 'fs'
 import path from 'path'
 import {Hash} from 'crypto'
 
+const eslintRc = {...eslintJson, parser: babelEslint}
+
 export default new RollupConfigurator().assembleConfig(getConfig)
 
-//const m = 'rollupconfig-export'
-//const debug = !!process.env.DEBUG
-
-/*
-name: non-empty string
-input: non-empty string
-output: object or array
-main, module: string or undefined
-clean: array of non-empty string, non-empty string or undefined
-print, shebang, nodelatest: boolean
-external: array of string or undefined
-targets: object or undefined
-
-unlikely to be used:
-node: boolean
-mainFlag, moduleFlag: boolean, present for array configuration
-*/
-function getConfig({input, output, external, targets, shebang, clean, print, nodelatest}) {
+function getConfig({input, output, external, targets, shebang, clean, print, eslint: useEslint}) {
   const latestNode = targets && targets.node === 'current'
   const isMini = targets === 'mini'
   const includeExclude = {
@@ -72,6 +59,7 @@ function getConfig({input, output, external, targets, shebang, clean, print, nod
     include: ['**/*.js', '**/*.mjs'],
   }
   let rollupBabelOptions
+  let rollupEslintOptions
   let rollupResolveOptions
 
   const config = {
@@ -81,7 +69,7 @@ function getConfig({input, output, external, targets, shebang, clean, print, nod
     onwarn: warningsMuffler,
     plugins: [
       // rollup-plugin-eslint https://github.com/TrySound/rollup-plugin-eslint
-      eslint(includeExclude),
+      eslint(rollupEslintOptions = Object.assign({}, includeExclude, useEslint ? eslintRc : {})),
       /*
       rollup-plugin-node-resolve https://www.npmjs.com/package/rollup-plugin-node-resolve
       locates modules in node_module directories and parent node_module directories
@@ -138,6 +126,7 @@ function getConfig({input, output, external, targets, shebang, clean, print, nod
   if (print) {
     console.log(`Rollup options for ${input}: ${util.inspect(config, {colors: true, depth: null})}`)
     console.log('Node Resolve options:', util.inspect(rollupResolveOptions, {colors: true, depth: null}))
+    console.log('Eslint options:', util.inspect(rollupEslintOptions, {colors: true, depth: null}))
     console.log('Babel options:', util.inspect(rollupBabelOptions, {colors: true, depth: null}))
   }
 
