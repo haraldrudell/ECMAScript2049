@@ -32,6 +32,7 @@ export default class RollupConfigurator extends RollupPackageJson {
       Object.assign(pkg, {
         external: this._assembleExternal(pkg),
         targets: this._getTargets(pkg.targets, 'rollup'),
+        eslint: this._getEslint(pkg.eslint, `eslint`),
       })
       Object.assign(config, getConfig(pkg))
     } else {
@@ -98,7 +99,7 @@ export default class RollupConfigurator extends RollupPackageJson {
   _getEslint(eslint) {
     return eslint === true || eslint === false
       ? eslint
-      : eslintFiles.every(file => !path.fileExistsSync(path.resolve(file))) // if none exists: true
+      : eslintFiles.every(file => !fs.pathExistsSync(path.resolve(file))) // if none exists: true
   }
 
   _getElementOutput({main, module, name, mainFlag, moduleFlag, shebang}) {

@@ -16,7 +16,7 @@ import eslint from 'rollup-plugin-eslint'
 import json from 'rollup-plugin-json'
 import shebangPlugin from 'rollup-plugin-shebang'
 
-import babelEslint from 'babel-eslint'
+//import babelEslint from 'babel-eslint'
 import env from 'babel-preset-env'
 import stage0 from 'babel-preset-stage-0'
 import externalHelpers from 'babel-plugin-external-helpers'
@@ -26,12 +26,14 @@ import transformExportExtensions from 'babel-plugin-transform-export-extensions'
 import dynamicImportNode from 'babel-plugin-dynamic-import-node'
 import transformObjectRestSpread from 'babel-plugin-transform-object-rest-spread'
 
+import resolvePackage from 'resolve'
+
 import util from 'util'
 import fs from 'fs'
 import path from 'path'
 import {Hash} from 'crypto'
 
-const eslintRc = {...eslintJson, parser: babelEslint}
+let eslintBaseOptions
 
 export default new RollupConfigurator().assembleConfig(getConfig)
 
@@ -69,7 +71,8 @@ function getConfig({input, output, external, targets, shebang, clean, print, esl
     onwarn: warningsMuffler,
     plugins: [
       // rollup-plugin-eslint https://github.com/TrySound/rollup-plugin-eslint
-      eslint(rollupEslintOptions = Object.assign({}, includeExclude, useEslint ? eslintRc : {})),
+      // CLIEngine options: https://eslint.org/docs/developer-guide/nodejs-api#cliengine
+      eslint(rollupEslintOptions = Object.assign({}, includeExclude, useEslint ? getEslintBaseOptions() : {})),
       /*
       rollup-plugin-node-resolve https://www.npmjs.com/package/rollup-plugin-node-resolve
       locates modules in node_module directories and parent node_module directories
@@ -131,4 +134,18 @@ function getConfig({input, output, external, targets, shebang, clean, print, esl
   }
 
   return config
+}
+
+function getEslintBaseOptions() {
+  if (eslintBaseOptions) return eslintBaseOptions
+
+  const beFile = resolvePackage.sync('babel-eslint/package.json')
+  const beData = JSON.parse(fs.readFileSync(beFile, 'utf8'))
+  const parser = path.join(beFile, '..', beData.main)
+
+  // convert globals to array (eslint CLIEngine wants that)
+  const globalsObject = Object(eslintJson.globals)
+  const globals = Object.keys(globalsObject).map(name => `${name}:${globalsObject[name]}`)
+
+  return eslintBaseOptions = {...eslintJson, parser, globals}
 }
