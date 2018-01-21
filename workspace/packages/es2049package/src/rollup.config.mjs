@@ -33,6 +33,7 @@ import fs from 'fs'
 import path from 'path'
 import {Hash} from 'crypto'
 
+const babelEslint = 'babel-eslint'
 let eslintBaseOptions
 
 export default new RollupConfigurator().assembleConfig(getConfig)
@@ -139,12 +140,12 @@ function getConfig({input, output, external, targets, shebang, clean, print, esl
 function getEslintBaseOptions() {
   if (eslintBaseOptions) return eslintBaseOptions
 
-  const beFile = resolvePackage.sync('babel-eslint/package.json')
+  const beFile = resolvePackage.sync(path.join(babelEslint, 'package.json'))
   const beData = JSON.parse(fs.readFileSync(beFile, 'utf8'))
-  const parser = path.join(beFile, '..', beData.main)
+  const parser = path.join(beFile, '..', Object(beData).main)
 
   // convert globals to array (eslint CLIEngine wants that)
-  const globalsObject = Object(eslintJson.globals)
+  const globalsObject = Object(Object(eslintJson).globals)
   const globals = Object.keys(globalsObject).map(name => `${name}:${globalsObject[name]}`)
 
   return eslintBaseOptions = {...eslintJson, parser, globals}

@@ -18,7 +18,7 @@
 <ol>
   <li><p>Add <strong>es2049package</strong> to your project</p>
     <blockquote><strong>yarn add es2049package --dev</strong></blockquote></li>
-  <li><p>Add <strong>build</strong> to the <code>scripts</code> entry of package.json:</p>
+  <li><p>Add <strong>build</strong> to the <strong>scripts</strong> entry of package.json:</p>
     <blockquote><strong>"scripts": {<br />
     &emsp;"build": "rollup --config node:es2049package"<br />
     …</strong></blockquote></li>
@@ -28,10 +28,10 @@
 
 <p>ADVICE</p>
 <ul>
-  <li>If building a Node.js executable, consider newer than default  rollup.target: {node: '6.10'}. Ensure main, module are set</li>
-  <li>If writing a command-line executable set rollup.shebang: true and probably dependencies: false</li>
+  <li>If building a Node.js library, consider newer than default <strong>rollup.targets</strong>: 6.10, like <strong>"targets": {"node": 8}</strong>. Ensure proper <strong>main</strong>, <strong>module</strong> are set in package.json</li>
+  <li>If writing a command-line executable set <strong>rollup.shebang</strong>: true and if self-contained <strong>"dependencies": false</strong>. Possibly use <strong>"targets": "mini"</strong></li>
   <li>It does work, here is a functional <a href=https://github.com/haraldrudell/ECMAScript2049/blob/master/workspace/packages/allspawn/package.json>package.json</a></li>
-  <li>If it seems mysterious, use rollup.print: true</li>
+  <li>If it seems mysterious, use <strong>rollup.print</strong>: true</li>
 </ul>
 <p>A package.json using <strong>es2049package</strong> can be found <strong><a href=https://github.com/haraldrudell/ECMAScript2049/blob/master/workspace/packages/allspawn/package.json>here</a></strong></p>
 
@@ -47,11 +47,16 @@
   <li><strong>external</strong>: optional string, array of string: list of packages or filenames that are to be external</li>
   <li><strong>clean</strong>: string or list of strings, desribed below under clean command</li>
   <li><strong>node</strong>: boolean default true. If true, the standard library are added as externals. Should normally be used for all Node.js programs</li>
-  <li><strong>targets</strong>: optional string 'stable', 'current' or a target object as defined  by babelJS. default is Node 6.10 LTS maintenance. <strong>mini</strong> indicates Node.js 9+</li>
+  <li><strong>targets</strong>: optional string<ul>
+    <li><strong>"stable"</strong> Node.js 4.8.1 LTS maintenance</li>
+    <li><strong>"current"</strong> The currently executing Node.js</li>
+    <li>a target object as defined  by <strong>babelJS</strong></li>
+    <li><strong>"mini"</strong> indicates Node.js 9+</li>
+  </ul>Default is Node.js 6.10 LTS active.</li>
   <li><strong>dependencies</strong>: optional boolean default true whether dependencies in package.json should be external. Use false if building a self-contained executable.</li>
   <li><strong>print</strong>: boolean, default false. If true, diagnostic printouts</li>
   <li><strong>shebang</strong>: boolean, default false. If true: the output is an executable, with a shebang line and proper permissions.</li>
-  <li><strong>eslint</strong>: boolean, default true if './.eslintrc.json' and './eslintrc.yaml' ars missing. If true: A default eslint configuration based on babel-eslint is provided.</li>
+  <li><strong>eslint</strong>: boolean, default true if <strong>./.eslintrc.json</strong> and <strong>./.eslintrc.yaml</strong> are missing. If true: A default eslint configuration based on <strong>babel-eslint</strong> is provided.</li>
 </ul>
 
 <h3>clean command</h3>

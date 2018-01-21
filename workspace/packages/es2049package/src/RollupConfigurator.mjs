@@ -2,7 +2,6 @@
 © 2017-present Harald Rudell <harald.rudell@gmail.com> (http://www.haraldrudell.com)
 This source code is licensed under the ISC-style license found in the LICENSE file in the root directory of this source tree.
 */
-// ECMAScipt 2015 as supported by rollup. No class properties, async generators or object spread operator
 import RollupPackageJson from './RollupPackageJson'
 import nodeIgnores from './nodepackages'
 
@@ -16,7 +15,8 @@ const defaultOutputDir = 'build'
 const cjsFormat = 'cjs'
 const esFormat = 'es'
 const defaultExtension = '.js'
-const nodeStable = '4.8'
+const ltsMaintenance = '4.8'
+const ltsActive = '6.10'
 
 export default class RollupConfigurator extends RollupPackageJson {
   assembleConfig(getConfig) {
@@ -72,12 +72,12 @@ export default class RollupConfigurator extends RollupPackageJson {
   }
 
   static deleteUndefined(config) {
-    if (config) for (let property of Object.keys(config))
-      if (config[property] === undefined) delete config[property]
+    for (let [property, value] of Object.entries(Object(config))) if (value === undefined) delete config[property]
   }
 
   _getTargets(targets, name) {
-    if (targets === 'stable' || targets === undefined) targets = {node: nodeStable}
+    if (targets === undefined) targets = {node: ltsActive}
+    else if (targets === 'stable') targets = {node: ltsMaintenance}
     else if (targets === 'current') targets = {node: 'current'}
     else if (targets !== 'mini') {
       const tt = typeof targets
@@ -133,7 +133,7 @@ export default class RollupConfigurator extends RollupPackageJson {
 
   _getDefaultInput() {
     for (let input of defaultInputs) if (fs.pathExistsSync(input)) return input
-    throw new Error(`RollupConfigurator cannot dertermine input: tried '${defaultInputs.join('\'\x20\'')}'`)
+    throw new Error(`RollupConfigurator cannot determine input: tried '${defaultInputs.join('\'\x20\'')}'`)
   }
 
   _hasExtension(filename) {
