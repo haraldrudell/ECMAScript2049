@@ -73,7 +73,7 @@ function getConfig({input, output, external, targets, shebang, clean, print, esl
     plugins: [
       // rollup-plugin-eslint https://github.com/TrySound/rollup-plugin-eslint
       // CLIEngine options: https://eslint.org/docs/developer-guide/nodejs-api#cliengine
-      eslint(rollupEslintOptions = Object.assign({}, includeExclude, useEslint ? getEslintBaseOptions() : {})),
+      eslint(rollupEslintOptions = {...includeExclude, ...(useEslint ? getEslintBaseOptions() : {})}),
       /*
       rollup-plugin-node-resolve https://www.npmjs.com/package/rollup-plugin-node-resolve
       locates modules in node_module directories and parent node_module directories
@@ -91,23 +91,24 @@ function getConfig({input, output, external, targets, shebang, clean, print, esl
           paths: [path.join(fs.realpathSync(process.cwd()), 'js_modules')], // modules in the js_modules directory will override real modules
       }}),
       json(), // required for import of .json files
-      babel(rollupBabelOptions = Object.assign({
+      babel(rollupBabelOptions = {
         // rollup-plugin-babel https://www.npmjs.com/package/rollup-plugin-babel
         babelrc: false, // do not process package.json or .babelrc files, rollup has the canonical Babel configuraiton
-      }, isMini ? {} : {
-        // bundle in Babel external helpers https://github.com/rollup/rollup-plugin-babel#usage
-        runtimeHelpers: true,
-      }, {
-        presets: (isMini ? []
-          : [[env, {modules: false, targets}], stage0]),
-        plugins: (isMini ? [
+        ...(isMini ? {} : {
+          // bundle in Babel external helpers https://github.com/rollup/rollup-plugin-babel#usage
+          runtimeHelpers: true,
+        }),
+        presets: isMini ? []
+          : [[env, {modules: false, targets}], stage0],
+        plugins: isMini ? [
             dynamicImportNode,
             transformClassProperties,
             transformExportExtensions,
             transformObjectRestSpread,
-          ] : [externalHelpers].concat(!latestNode ? [transformRuntime] : []))
-          .concat(print ? [printBabelFilenames] : []),
-      }, includeExclude)), // only process files from the project
+          ] : [externalHelpers]
+            .concat(!latestNode ? [transformRuntime] : [])
+            .concat(print ? [printBabelFilenames] : []),
+        ...includeExclude}), // only process files from the project
       /*
       rollup-plugin-commonjs https://github.com/rollup/rollup-plugin-commonjs
       converts commonJS modules to ECMAScript 2015
@@ -141,8 +142,9 @@ function getEslintBaseOptions() {
   if (eslintBaseOptions) return eslintBaseOptions
 
   const beFile = resolvePackage.sync(path.join(babelEslint, 'package.json'))
+  const beDir = path.join(beFile, '..')
   const beData = JSON.parse(fs.readFileSync(beFile, 'utf8'))
-  const parser = path.join(beFile, '..', Object(beData).main)
+  const parser = path.join(beDir, Object(beData).main)
 
   // convert globals to array (eslint CLIEngine wants that)
   const globalsObject = Object(Object(eslintJson).globals)
