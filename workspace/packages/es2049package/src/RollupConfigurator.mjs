@@ -37,20 +37,17 @@ export default class RollupConfigurator extends RollupPackageJson {
       Object.assign(config, getConfig(pkg))
     } else {
       let {clean} = pkg
-      const {main, module, name} = pkg
-      for (let [index, inputElement] of pkg.input.entries()) {
+      const {main, module, name, input: inputList} = pkg
+      for (let [index, inputElement] of inputList.entries()) {
         const m = `rollup.input index ${index}`
-        const {input, output, dependencies,
+        const {input, output, dependencies: dependenciesFlag = pkg.dependenciesFlag,
           main: mainFlag, module: moduleFlag,
           external = pkg.external,
           node = pkg.node, print = pkg.print, shebang = pkg.shebang, targets = pkg.targets, eslint = pkg.eslint} = inputElement || false
-        const dependencyList = dependencies
-          ? pkg.dependencyList || this._getDependencyList(true)
-          : undefined
         const o = {
           input: input ? this._getNonEmptyString(input, `${m}: input`) : this._getDefaultInput(),
           output: output ? this._getArrayObjectOrUndefined(output, `${m}: output`) : this._getElementOutput({main, module, name, mainFlag, moduleFlag, shebang}),
-          external: this._assembleExternal({node, dependencyList, external}),
+          external: this._assembleExternal({node, dependencyList, external, dependenciesFlag}),
           name,
           main,
           module,
@@ -62,6 +59,7 @@ export default class RollupConfigurator extends RollupPackageJson {
           moduleFlag: this._getBoolean(moduleFlag, `${m}: module`),
           node: this._getBoolean(node, `${m}: node`),
           eslint: this._getEslint(eslint, `${m}: eslint`),
+          dependenciesFlag,
         }
         config.push(getConfig(o))
         clean = false
@@ -86,13 +84,13 @@ export default class RollupConfigurator extends RollupPackageJson {
     return targets
   }
 
-  _assembleExternal({node, dependencyList, external: ex}) {
+  _assembleExternal({node, dependencyList, external: ex, dependenciesFlag}) {
     let external = [] // use array b/c elements has to be added to Set one by one
     if (ex)
       if (!Array.isArray(ex)) external.push(ex)
-      else Array.prototype.push.apply(external, ex)
-    if (node) Array.prototype.push.apply(external, nodeIgnores)
-    if (dependencyList) Array.prototype.push.apply(external, dependencyList)
+      else external.push.apply(external, ex)
+    if (node) external.push.apply(external, nodeIgnores)
+    if (dependenciesFlag) external.push.apply(external, dependencyList)
     return external.length ? Array.from(new Set(external)).sort() : undefined
   }
 

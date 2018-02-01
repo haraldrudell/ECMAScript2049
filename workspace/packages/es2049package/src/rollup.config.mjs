@@ -36,9 +36,11 @@ import {Hash} from 'crypto'
 const babelEslint = 'babel-eslint'
 let eslintBaseOptions
 
+const cwd = process.cwd()
+
 export default new RollupConfigurator().assembleConfig(getConfig)
 
-function getConfig({input, output, external, targets, shebang, clean, print, eslint: useEslint}) {
+function getConfig({input, output, external, targets, shebang, clean, print, eslint: useEslint, dependenciesFlag}) {
   const latestNode = targets && targets.node === 'current'
   const isMini = targets === 'mini'
   const includeExclude = {
@@ -71,8 +73,10 @@ function getConfig({input, output, external, targets, shebang, clean, print, esl
     external,
     onwarn: warningsMuffler,
     plugins: [
-      // rollup-plugin-eslint https://github.com/TrySound/rollup-plugin-eslint
-      // CLIEngine options: https://eslint.org/docs/developer-guide/nodejs-api#cliengine
+      /*
+      rollup-plugin-eslint https://github.com/TrySound/rollup-plugin-eslint
+      CLIEngine options: https://eslint.org/docs/developer-guide/nodejs-api#cliengine
+      */
       eslint(rollupEslintOptions = {...includeExclude, ...(useEslint ? getEslintBaseOptions() : {})}),
       /*
       rollup-plugin-node-resolve https://www.npmjs.com/package/rollup-plugin-node-resolve
@@ -80,7 +84,7 @@ function getConfig({input, output, external, targets, shebang, clean, print, esl
       examines module and main fields of package.json
       prefer builtins, like 'util' over same-named other modules
       */
-      resolve(rollupResolveOptions = {
+      resolve(rollupResolveOptions = Object.assign({
         extensions: ['.mjs', '.js', '.json'],
         customResolveOptions: {
           /*
@@ -89,7 +93,7 @@ function getConfig({input, output, external, targets, shebang, clean, print, esl
           this enables overriding mock modules solving such problems
           */
           paths: [path.join(fs.realpathSync(process.cwd()), 'js_modules')], // modules in the js_modules directory will override real modules
-      }}),
+        }}, dependenciesFlag ? {jail: cwd} : {})),
       json(), // required for import of .json files
       babel(rollupBabelOptions = {
         // rollup-plugin-babel https://www.npmjs.com/package/rollup-plugin-babel
@@ -130,9 +134,9 @@ function getConfig({input, output, external, targets, shebang, clean, print, esl
 
   if (print) {
     console.log(`Rollup options for ${input}: ${util.inspect(config, {colors: true, depth: null})}`)
-    console.log('Node Resolve options:', util.inspect(rollupResolveOptions, {colors: true, depth: null}))
-    console.log('Eslint options:', util.inspect(rollupEslintOptions, {colors: true, depth: null}))
-    console.log('Babel options:', util.inspect(rollupBabelOptions, {colors: true, depth: null}))
+    console.log(`Node Resolve options: ${util.inspect(rollupResolveOptions, {colors: true, depth: null})}`)
+    console.log(`Eslint options: ${util.inspect(rollupEslintOptions, {colors: true, depth: null})}`)
+    console.log(`Babel options: ${util.inspect(rollupBabelOptions, {colors: true, depth: null})}`)
   }
 
   return config

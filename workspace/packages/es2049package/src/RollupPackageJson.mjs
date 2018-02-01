@@ -8,7 +8,7 @@ import PackageJson from './PackageJson'
 export default class RollupPackageJson extends PackageJson {
   getRollupFromJson() {
     const {json: {name, main, module, rollup: ro}} = this
-    const {input, output, dependencies: dependenciesFlag, main: mainFlag, module: moduleFlag, shebang, clean, external, print, node, targets, eslint} = ro || {}
+    const {input, output, dependencies: dependenciesFlag, main: mainFlag, module: moduleFlag, shebang, clean, external, print, node, targets, eslint} = ro || false
     return {
       name: this._getNonEmptyString(name, 'name'),
       main: this._getStringOrUndefined(main, 'main'),
@@ -23,21 +23,16 @@ export default class RollupPackageJson extends PackageJson {
       moduleFlag: this._getBoolean(moduleFlag, 'rollup.module', false),
       input: this._getArrayStringOrUndefined(input),
       external: this._getArrayOfNonEmptyStringStringOrUndefined(external, 'rollup.external'),
-      dependencyList: this._getDependencyList(dependenciesFlag),
+      dependencyList: this._getDependencyList(),
       eslint: this._getBoolean(eslint, 'rollup.eslint'),
+      dependenciesFlag: dependenciesFlag !== false,
     }
   }
 
-  _getDependencyList(dependenciesFlag) {
-    let dependencyList
-    if (dependenciesFlag !== false) {
-      const {json: {dependencies}} = this
-      if (dependencies) {
-        const list = Object.keys(dependencies)
-        if (list.length) dependencyList = this._getArrayOfNonEmptyString(list)
-      }
-    }
-    return dependencyList
+  _getDependencyList() {
+    const {json: {dependencies}} = this
+    const list = Object.keys(Object(dependencies))
+    return list.length ? this._getArrayOfNonEmptyString(list) : undefined
   }
 
   _getObjectStringOrUndefined(value, name, defaultValue) {
