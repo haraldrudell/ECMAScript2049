@@ -37,7 +37,7 @@ export default class RollupConfigurator extends RollupPackageJson {
       Object.assign(config, getConfig(pkg))
     } else {
       let {clean} = pkg
-      const {main, module, name, input: inputList} = pkg
+      const {main, module, name, input: inputList, dependencyList} = pkg
       for (let [index, inputElement] of inputList.entries()) {
         const m = `rollup.input index ${index}`
         const {input, output, dependencies: dependenciesFlag = pkg.dependenciesFlag,
