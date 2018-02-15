@@ -23,6 +23,11 @@ test('yarn build should have completed', async () => {
 })
 
 test('clean executable runs', async () => {
-  const {stdout} = await spawnCapture(cleanExecutable, ['-debug', 'xyz'], {stderrFails: true})
+  const o = {
+    cmd: cleanExecutable,
+    args: ['-debug', 'xyz'],
+    options: {stderrFails: true},
+  }
+  const {stdout} = await spawnCapture(o)
   console.log('YES', stdout, '<')
 })
