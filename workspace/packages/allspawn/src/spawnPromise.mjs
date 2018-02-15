@@ -8,16 +8,14 @@ const {spawn} = childProcess
 export function spawnPromise(o) {
   // options: cwd env argv0 stdio detached uid gid shell windowsVerbatimArguments windowsHide
   const {cmd, args, options} = getCmdArgs(o)
+  let cp = spawn(cmd, args, options)
 
-  let cp
   const promise = new Promise((resolve, reject) => {
     let e
-    cp = spawn(cmd, args, options)
-      .once('close', (status, signal) => !e && status === 0 && !signal && resolve(status) ||
+    cp.once('close', (status, signal) => !e && status === 0 && !signal && resolve(status) ||
         reject(getError({cmd, args, status, signal, e})))
       .on('error', ee => !e && (e = ee)) // subsequent errors are ignored
   })
-
   return {cp, promise}
 }
 

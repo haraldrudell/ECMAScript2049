@@ -45,3 +45,10 @@ test('spawnCapture captures silently', async () => {
   expect(stderr).toMatch(/^$/)
   expect(stdout.substring(0,1)).toMatch('v')
 })
+
+/*
+test('Crash from es2049package', async () => {
+  const {stdout} = await spawnCapture('abc', ['-debug', 'xyz'], {stderrFails: true})
+  console.log('Crash from es2049package', typeof stdout, typeof stdout === 'string' && stdout.length, stdout, '<')
+})
+*/
