@@ -2,13 +2,14 @@
 © 2017-present Harald Rudell <harald.rudell@gmail.com> (http://www.haraldrudell.com)
 This source code is licensed under the ISC-style license found in the LICENSE file in the root directory of this source tree.
 */
-import {spawnAsync, spawnCapture} from './spawn-async-js'
+//import {spawnAsync, spawnCapture} from '../spawn-async-js'
+import {spawnAsync} from '../lib/spawn-async'
 
 import fs from 'fs-extra'
 
 import path from 'path'
 
-export default class AsyncTester {
+export default class InstallTester {
   packagesDir = path.resolve('..')
   testsDir = path.join(this.packagesDir, '..', '..', 'tests')
   testProjectDir = path.join(this.testsDir, 'allspawn-test')
@@ -27,7 +28,7 @@ export default class AsyncTester {
     `import {spawnAsync} from '${this.allSpawn}'`,
     'f()',
     'async function f () {',
-    '  await spawnAsync(\'node\', [\'--print\', \'"value is: " + (1+2)\'])',
+    '  await spawnAsync({cmd: \'node\', args:[\'--print\', \'"value is: " + (1+2)\']})',
     '}',
     '',
   ].join('\n')
@@ -49,7 +50,7 @@ export default class AsyncTester {
     await this.writeCode(srcDir, indexMjs)
 
     const {stdout} = await this.run('yarn', ['start'], true)
-    if (!stdout.includes(indexMjsOutput)) throw new Error(`${this.m} yarn start failed: output: '${stdout}' search: ${indexMjsOutput}`)
+    if (!stdout.includes(indexMjsOutput)) throw new Error(`${this.m} yarn start failed: output: '${stdout}' searched string: '${indexMjsOutput}'`)
     console.log(`${this.m}.test: code transpiled by es2049scripts executed successfully.`)
   }
 
@@ -72,10 +73,15 @@ export default class AsyncTester {
   }
 
   async run(cmd, args, getStdout, doPipe = true) {
-    console.log(cmd, ...args)
     const {cwd} = this
-    if (!getStdout) return spawnAsync(cmd, args, {cwd})
-    else return spawnCapture(cmd, args, {cwd, stderrFails: true, doPipe})
+    const o = {
+      cmd,
+      args,
+      options: {cwd},
+      echo: true,
+    }
+    if (getStdout) Object.assign(o, {capture: true})
+    return spawnAsync(o)
   }
 
   async ensureScriptsStart() {
