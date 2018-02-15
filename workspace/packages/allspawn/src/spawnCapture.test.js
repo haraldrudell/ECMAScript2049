@@ -35,6 +35,7 @@ test('yarn build should have completed', async () => {
 })
 
 test('spawnCapture captures silently', async () => {
+  // node --eval "require('./lib/spawn-async.js').spawnCapture({args: ['node', '--version'], debug: true})"
   const o = {
     args: ['node', '--version'],
   }

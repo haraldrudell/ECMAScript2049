@@ -7,9 +7,10 @@ import InstallTester from './InstallTester'
 import pjson from '../package.json'
 
 test('Test package.json main commonJS export', async () => {
-  const fifteenSeconds = 15e3
+  const seconds25 = 25e3
+  const jestTimeout = seconds25
   const name = getNonEmptyString(Object(pjson).name, 'package.json: name')
-  jest.setTimeout(fifteenSeconds)
+  jest.setTimeout(jestTimeout)
   await new InstallTester().test(name)
 })
 

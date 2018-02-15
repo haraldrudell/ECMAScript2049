@@ -2,13 +2,14 @@
 © 2017-present Harald Rudell <harald.rudell@gmail.com> (http://www.haraldrudell.com)
 This source code is licensed under the ISC-style license found in the LICENSE file in the root directory of this source tree.
 */
-import {spawnPromise} from './spawnPromise'
+import {spawnPromise, getCmdArgs} from './spawnPromise'
 import Capturer from './Capturer'
 import Timer from './Timer'
 
 export default class SpawnAsync {
   static optionsProperties = Object.keys({timeout: 1, maxBuffer: 1, silent: 1})
   static killTimeout = 3e3
+  static maxBuffer = 200*1024
   setExit = () => this.isExit = true
   onTimeout = this.onTimeout.bind(this)
 
@@ -17,8 +18,9 @@ export default class SpawnAsync {
   }
 
   constructor(o) {
-    const {cmd, args, options: options0, cpReceiver, echo, capture, stderrFails, debug, killTimeout: kt} = Object(o)
+    const {cpReceiver, echo, capture, stderrFails, debug, killTimeout: kt} = Object(o)
     this.m = 'SpawnAsync'
+    const {cmd, args, options: options0} = getCmdArgs(o)
     const killTimeout = Number(kt > 0 ? kt : SpawnAsync.killTimeout)
     Object.assign(this, {cmd, args, cpReceiver, echo, capture, stderrFails, killTimeout, debug})
     this.cmdString = `${cmd || ''} ${Array.isArray(args) ? args.join('\x20') : ''}`
@@ -27,7 +29,7 @@ export default class SpawnAsync {
     const options = this.options = isGood ? {...options0} : options0
     const opts = Object(options)
     this.timeout = opts.timeout >= 0 ? +opts.timeout : 0
-    this.maxBuffer = opts.maxBuffer >= 0 ? +opts.maxBuffer : 200*1024
+    this.maxBuffer = opts.maxBuffer >= 0 ? +opts.maxBuffer : SpawnAsync.maxBuffer
     const silent = this.silent = !!opts.silent
     for (let property of SpawnAsync.optionsProperties) delete opts[property]
 
@@ -54,17 +56,19 @@ export default class SpawnAsync {
 
   async spawn() {
     const {timeout, onTimeout, debug} = this
-    return (await Promise.all([
-        this.spawn2(),
-      ].concat(
-        timeout > 0
-          ? [(this.timer = new Timer({timeout, onTimeout, debug})).start()]
-          : []
-        )))[0]
+    const [result] = await Promise.all([
+      this.launchProcess(),
+    ].concat(timeout > 0
+      ? [(this.timer = new Timer({timeout, onTimeout, debug})).start()]
+      : []
+    ))
+    return result
   }
 
-  async spawn2() {
+  async launchProcess() {
     const {echo, cmdString, cmd, args, options, cpReceiver, capture, stderrFails, silent} = this
+
+    // launch the child process
     echo && console.log(cmdString)
     const {cp, promise} = spawnPromise({cmd, args, options})
     cpReceiver && (cpReceiver.cp = cp)
@@ -82,6 +86,7 @@ export default class SpawnAsync {
     let e
     const results = await Promise.all(ps).catch(ee => (e = ee))
 
+    // handle timeout
     const {isTimeout, timer} = this
     if (e && isTimeout && (e.signal === 'SIGTERM' || e.signal === 'SIGKILL')) {
       e = Object.assign(new Error(`Process timeout: ${(this.timeout / 1e3).toFixed(1)} s: ${cmdString}`), {cmd, args})
