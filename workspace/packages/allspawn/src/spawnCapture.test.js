@@ -42,7 +42,9 @@ test('spawnCapture captures silently', async () => {
   const result = await spawnCapture(o)
   expect(typeof result).toBe('object')
   const {stdout, stderr} = result
+  expect(typeof stderr).toBe('string')
   expect(stderr).toMatch(/^$/)
+  expect(typeof stdout).toBe('string')
   expect(stdout.substring(0,1)).toMatch('v')
 })
 

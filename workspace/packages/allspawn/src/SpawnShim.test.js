@@ -10,7 +10,7 @@ import path from 'path'
 import childProcess from 'child_process'
 const {ChildProcess} = childProcess
 
-let spawnPromise
+let SpawnShim
 
 test('yarn build should have completed', () => {
   const {main} = Object(pjson)
@@ -30,14 +30,18 @@ test('yarn build should have completed', () => {
   }
   if (e) expect(`failed to require: '${main}': Error: ${e.message}`).toBeNull()
   expect(typeof allspawn).toBe('object')
-  spawnPromise = allspawn.spawnPromise
-  expect(typeof spawnPromise).toBe('function')
+  SpawnShim = allspawn.SpawnShim
+  expect(typeof SpawnShim).toBe('function')
 })
 
-test('spawnPromise', async () => {
-  const {cp, promise} = spawnPromise({args: ['node', '--version']})
+test('SpawnShim', async () => {
+  const spawnShim = new SpawnShim({args: ['node', '--version']})
+  const cp = spawnShim.spawn()
   expect(cp).toBeInstanceOf(ChildProcess)
+  const {promise} = spawnShim
   expect(promise).toBeInstanceOf(Promise)
   const resolve = await promise
-  expect(resolve).toBe(0)
+  expect(typeof resolve).toBe('object')
+  expect(resolve.status).toBe(0)
 })
+

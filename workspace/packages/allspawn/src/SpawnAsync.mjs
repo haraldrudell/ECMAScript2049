@@ -2,59 +2,31 @@
 © 2017-present Harald Rudell <harald.rudell@gmail.com> (http://www.haraldrudell.com)
 This source code is licensed under the ISC-style license found in the LICENSE file in the root directory of this source tree.
 */
-import {spawnPromise, getCmdArgs} from './spawnPromise'
-import Capturer from './Capturer'
+import SpawnPipe from './SpawnPipe'
 import Timer from './Timer'
 
-export default class SpawnAsync {
-  static optionsProperties = Object.keys({timeout: 1, maxBuffer: 1, silent: 1})
-  static killTimeout = 3e3
-  static maxBuffer = 200*1024
-  setExit = () => this.isExit = true
+export default class SpawnAsync extends SpawnPipe {
+  static optionsProperties = Object.keys({timeout: 1})
   onTimeout = this.onTimeout.bind(this)
 
   static async spawnAsync(o) {
-    return new SpawnAsync(o).spawn()
+    return new SpawnAsync(o).startSpawn()
   }
 
   constructor(o) {
-    const {cpReceiver, echo, capture, stderrFails, debug, killTimeout: kt} = Object(o)
-    this.m = 'SpawnAsync'
-    const {cmd, args, options: options0} = getCmdArgs(o)
-    const killTimeout = Number(kt > 0 ? kt : SpawnAsync.killTimeout)
-    Object.assign(this, {cmd, args, cpReceiver, echo, capture, stderrFails, killTimeout, debug})
-    this.cmdString = `${cmd || ''} ${Array.isArray(args) ? args.join('\x20') : ''}`
-
-    const isGood = options0 === undefined || typeof options0 === 'object'
-    const options = this.options = isGood ? {...options0} : options0
-    const opts = Object(options)
-    this.timeout = opts.timeout >= 0 ? +opts.timeout : 0
-    this.maxBuffer = opts.maxBuffer >= 0 ? +opts.maxBuffer : SpawnAsync.maxBuffer
-    const silent = this.silent = !!opts.silent
-    for (let property of SpawnAsync.optionsProperties) delete opts[property]
-
-    if (isGood) {
-      const {stdio: stdio0} = options
-      const stdio = options.stdio = Array.isArray(stdio0) ? stdio0 : typeof(stdio0) === 'string' ? new Array(3).fill(stdio0) : ['ignore', 'inherit', 'inherit']
-      if (capture) {
-        stdio[1] = stdio[2] = 'pipe'
-        if (stdio[0] === undefined) stdio[1] = 'ignore'
-      } else {
-        if (silent) {
-          stdio[1] = stdio[2] = 'ignore'
-          if (stdio[0] === undefined) stdio[1] = 'ignore'
-        }
-        if (stderrFails) {
-          stdio[2] = 'pipe'
-          if (stdio[1] === undefined) stdio[1] = 'ignore'
-          if (stdio[0] === undefined) stdio[1] = 'ignore'
-        }
-      }
-    }
+    super(Object.assign({name: 'SpawnAsync'}, o))
+    const {cpReceiver, echo, nonZeroOk} = o || false
+    echo && (this.echo = true)
+    nonZeroOk && (this.nonZeroOk = true)
+    cpReceiver && Object.assign(this, {cpReceiver})
+    const {options, debug} = this
+    const {timeout} = options
+    this.timeout = timeout >= 0 ? +timeout : 0
+    for (let p of SpawnAsync.optionsProperties) delete options[p]
     debug && console.log(`${this.m} constructor:`, this)
   }
 
-  async spawn() {
+  async startSpawn() {
     const {timeout, onTimeout, debug} = this
     const [result] = await Promise.all([
       this.launchProcess(),
@@ -66,41 +38,31 @@ export default class SpawnAsync {
   }
 
   async launchProcess() {
-    const {echo, cmdString, cmd, args, options, cpReceiver, capture, stderrFails, silent} = this
+    const {echo, cmdString, cpReceiver} = this
 
     // launch the child process
     echo && console.log(cmdString)
-    const {cp, promise} = spawnPromise({cmd, args, options})
+    const cp = this.spawn()
     cpReceiver && (cpReceiver.cp = cp)
-    this.cp = cp.once('exit', this.setExit)
-      .once('error', this.setExit)
-    this.promise = promise
 
-    // assemble promises
-    const ps = []
-    const capturers = capture && ['stdout', 'stderr'].map(stream => new Capturer({input: cp[stream], pipe: !silent && process[stream]}))
-    if (capturers) ps.push.apply(ps, capturers.map(c => c.promise))
-    ps.push(promise)
-    if (!capturers && stderrFails) ps.push(this.doStderrFails())
-
-    let e
-    const results = await Promise.all(ps).catch(ee => (e = ee))
+    // await child process exit
+    const [{e, status, signal}, {stdout, stderr, isStderr}] = await Promise.all([this.promise, this.startCapture()])
 
     // handle timeout
-    const {isTimeout, timer} = this
-    if (e && isTimeout && (e.signal === 'SIGTERM' || e.signal === 'SIGKILL')) {
-      e = Object.assign(new Error(`Process timeout: ${(this.timeout / 1e3).toFixed(1)} s: ${cmdString}`), {cmd, args})
+    const {isTimeout, timer, nonZeroOk} = this
+    if (isTimeout && (signal === 'SIGTERM' || signal === 'SIGKILL')) {
+      throw this.setErrorProps(new Error(`Process timeout: ${(this.timeout / 1e3).toFixed(1)} s: ${cmdString}`))
     } else timer && timer.cancel()
-    if (e) throw e
 
-    if (capturers) {
-      const [stdout, stderr] = results
-      if (stderrFails && stderr) {
-        const s = this.trimEnd(stderr)
-        throw Object.assign(new Error(`Output on standard error: ${cmdString}: '${s}'`), {cmd, args, stderr: s})
-      }
-      return {stdout, stderr}
-    } else return results[0]
+    // handle error from child process
+    if (e) throw this.setErrorProps(e)
+    if ((status && !nonZeroOk) || signal) throw this.getError({status, signal})
+
+    if (isStderr) throw this.setErrorProps(new Error(`Output on standard error: ${cmdString}: '${stderr}'`), {stderr: this.trimEnd(stderr)})
+
+    if (stdout === undefined) return status
+
+    return {stdout, stderr}
   }
 
   onTimeout() {
@@ -110,41 +72,24 @@ export default class SpawnAsync {
     return this.abortProcess()
   }
 
-  async abortProcess() {
-    const {isExit, debug, killTimeout} = this
-    debug && console.log(`${this.m} abortProcess: isExit: ${isExit}`)
-    if (!this.isExit) {
-      const {cp} = this
-      if (!cp.killed) {
-        debug && console.log(`${this.m} cp.kill…`)
-        cp.kill()
-      }
-      let timer
-      const isTimeout = await new Promise((resolve, reject) => {
-        timer = setTimeout(() => resolve(true, killTimeout), killTimeout)
-        cp.once('exit', () => resolve())
-          .once('error', () => resolve())
-      })
-      if (!isTimeout) clearTimeout(timer)
-      else {
-        cp.kill('SIGKILL') // kill -9
-        return this.promise
-      }
-    }
-  }
-
-  async doStderrFails() {
-    const {cp: {stderr}, cmdString, cmd, args} = this
-    const text0 = await new Promise((resolve, reject) => stderr
-      .once('data', textx => textx && resolve(textx))
-      .once('close', () => resolve())
-      .setEncoding('utf8'))
-    const text = this.trimEnd(text0)
-    if (text) throw Object.assign(new Error(`Output on standard error: ${cmdString}: '${text}'`), {cmd, args, stderr: text})
-  }
-
   trimEnd(s) {
     if (typeof s === 'string' && s.endsWith('\n')) return s.slice(0, -1)
     return s
+  }
+
+  getError({status, signal}) {
+    const {cmdString} = this
+    let msg = `status code: ${status}`
+    if (signal) msg += ` signal: ${signal}`
+    msg += ` '${cmdString}'`
+    const e = new Error(msg)
+    Object.assign(e, {status})
+    if (signal) Object.assign(e, {signal})
+    return this.setErrorProps(e)
+  }
+
+  setErrorProps(e, o) {
+    const {cmd, args} = this
+    return Object.assign(e, {cmd, args}, o)
   }
 }

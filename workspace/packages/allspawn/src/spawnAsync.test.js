@@ -43,16 +43,6 @@ test('spawnAsync can launch node', async () => {
   expect(statusCode).toBe(0)
 })
 
-test('spawnAsync cmd works', async () => {
-  const o = {
-    cmd: 'node',
-    args: ['--version'],
-    options: {silent: true},
-  }
-  const statusCode = await spawnAsync(o)
-  expect(statusCode).toBe(0)
-})
-
 test('spawnAsync cpReceiver works', async () => {
   const cpReceiver = {}
   const o = {

@@ -4,14 +4,19 @@ This source code is licensed under the ISC-style license found in the LICENSE fi
 */
 import SpawnAsync from './SpawnAsync'
 
-export function spawnCapture(o) {
-  return SpawnAsync.spawnAsync({
-    capture: true,
+export async function spawnCapture(o) {
+  const spawnAsync = new SpawnAsync({
     stderrFails: true,
     ...o,
+    capture: true,
     options: {
       timeout: 3e3,
       silent: true,
       ...Object(o).options,
     }})
+  const result = await spawnAsync.startSpawn()
+  const {stdout, stderr} = result
+  result.stdout = spawnAsync.trimEnd(stdout)
+  result.stderr = spawnAsync.trimEnd(stderr)
+  return result
 }

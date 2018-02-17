@@ -5,5 +5,5 @@ This source code is licensed under the ISC-style license found in the LICENSE fi
 import SpawnAsync from './SpawnAsync'
 export {default as SpawnAsync} from './SpawnAsync'
 export const spawnAsync = SpawnAsync.spawnAsync
-export * from './spawnPromise'
 export * from './spawnCapture'
+export {default as SpawnShim} from './SpawnShim'
