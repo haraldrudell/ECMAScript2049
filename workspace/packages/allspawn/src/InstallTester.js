@@ -2,7 +2,8 @@
 © 2017-present Harald Rudell <harald.rudell@gmail.com> (http://www.haraldrudell.com)
 This source code is licensed under the ISC-style license found in the LICENSE file in the root directory of this source tree.
 */
-import {spawnAsync} from 'allspawn'
+import {spawnCapture} from 'allspawn'
+//import {spawnCapture} from '../lib/spawn-async'
 
 import fs from 'fs-extra'
 
@@ -27,11 +28,13 @@ export default class InstallTester {
     `import {spawnAsync} from '${this.allSpawn}'`,
     'f()',
     'async function f () {',
-    '  await spawnAsync({cmd: \'node\', args:[\'--print\', \'"value is: " + (1+2)\']})',
+    `  await spawnAsync({args:['node', '--print', '"value is: " + (1+2)']})`,
     '}',
     '',
   ].join('\n')
   indexMjsOutput = 'value is: 3'
+  static seconds10 = 1e4
+  yarnAddTimeout = InstallTester.seconds10
 
   constructor(o) {
     const {debug, name: m = 'ScriptsTester'} = o || false
@@ -43,12 +46,12 @@ export default class InstallTester {
     await this.getTestProjectDir()
     const testUsageDir = this.cwd = await this.getTestUsageDir()
     console.log(`${this.m} TEST in directory: ${testUsageDir}`)
-    await this.run('yarn', ['init', '--yes'])
-    await this.run('yarn', ['add', packagePathRel, es2049scripts, '--dev'], true, false)
+    await this.run(['yarn', 'init', '--yes'], {stderrFails: false})
+    await this.run(['yarn', 'add', packagePathRel, es2049scripts, '--dev'], {options: {timeout: this.yarnAddTimeout}})
     await this.ensureScriptsStart()
     await this.writeCode(srcDir, indexMjs)
 
-    const {stdout} = await this.run('yarn', ['start'], true)
+    const {stdout} = await this.run(['yarn', 'start'])
     if (!stdout.includes(indexMjsOutput)) throw new Error(`${this.m} yarn start failed: output: '${stdout}' searched string: '${indexMjsOutput}'`)
     console.log(`${this.m}.test: code transpiled by es2049scripts executed successfully.`)
   }
@@ -71,16 +74,11 @@ export default class InstallTester {
     return fs.writeFile(path.join(dir, file), this.indexMjsCode)
   }
 
-  async run(cmd, args, getStdout, doPipe = true) {
+  async run(args, o) {
     const {cwd} = this
-    const o = {
-      cmd,
-      args,
-      options: {cwd},
-      echo: true,
-    }
-    if (getStdout) Object.assign(o, {capture: true})
-    return spawnAsync(o)
+    const options = Object.assign({cwd}, o && o.options)
+    o && delete o.options
+    return spawnCapture(Object.assign({args, options, echo: true}, o))
   }
 
   async ensureScriptsStart() {

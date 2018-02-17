@@ -38,19 +38,24 @@ export default class SpawnAsync extends SpawnPipe {
   }
 
   async launchProcess() {
-    const {echo, cmdString, cpReceiver} = this
+    const {echo, cmdString, cpReceiver, debug} = this
 
     // launch the child process
     echo && console.log(cmdString)
     const cp = this.spawn()
     cpReceiver && (cpReceiver.cp = cp)
+    if (debug) {
+      const cpEmit = cp.emit.bind(cp)
+      cp.emit = (...args) => console.log('cpEvent:', args) + cpEmit(...args)
+    }
 
     // await child process exit
     const [{e, status, signal}, {stdout, stderr, isStderr}] = await Promise.all([this.promise, this.startCapture()])
 
     // handle timeout
     const {isTimeout, timer, nonZeroOk} = this
-    if (isTimeout && (signal === 'SIGTERM' || signal === 'SIGKILL')) {
+    debug && console.log(`${this.m} process exit:`, {e, status, signal, stdout: stdout && stdout.length, stderr: stderr && stderr.length, isStderr, isTimeout, ss: stdout})
+    if (isTimeout) {
       throw this.setErrorProps(new Error(`Process timeout: ${(this.timeout / 1e3).toFixed(1)} s: ${cmdString}`))
     } else timer && timer.cancel()
 
