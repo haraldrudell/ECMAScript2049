@@ -31,7 +31,7 @@
   <li>If building a Node.js library, consider newer than default <strong>rollup.targets</strong>: 6.10, like <strong>"targets": {"node": 8}</strong>. Ensure proper <strong>main</strong>, <strong>module</strong> are set in package.json</li>
   <li>If writing a command-line executable set <strong>rollup.shebang</strong>: true and if self-contained <strong>"dependencies": false</strong>. Possibly use <strong>"targets": "mini"</strong></li>
   <li>It does work, here is a functional <a href=https://github.com/haraldrudell/ECMAScript2049/blob/master/workspace/packages/allspawn/package.json>package.json</a></li>
-  <li>If it seems mysterious, use <strong>rollup.print</strong>: true</li>
+  <li>If it seems mysterious, use <strong>ES2049PACKAGE_DEBUG</strong> and possibly <strong>ES2049PACKAGE_RESOLVE</strong> or <strong>ES2049PACKAGE_LOAD</strong> as described below</li>
 </ul>
 <p>A package.json using <strong>es2049package</strong> can be found <strong><a href=https://github.com/haraldrudell/ECMAScript2049/blob/master/workspace/packages/allspawn/package.json>here</a></strong></p>
 
@@ -54,7 +54,6 @@
     <li><strong>"mini"</strong> indicates Node.js 9+</li>
   </ul>Default is Node.js 6.10 LTS active.</li>
   <li><strong>dependencies</strong>: optional boolean default true whether dependencies in package.json should be external. Use false if building a self-contained executable.</li>
-  <li><strong>print</strong>: boolean, default false. If true, diagnostic printouts</li>
   <li><strong>shebang</strong>: boolean, default false. If true: the output is an executable, with a shebang line and proper permissions.</li>
   <li><strong>eslint</strong>: boolean, default true if <strong>./.eslintrc.json</strong> and <strong>./.eslintrc.yaml</strong> are missing. If true: A default eslint configuration based on <strong>babel-eslint</strong> is provided.</li>
 </ul>
@@ -77,6 +76,10 @@
 <p>&emsp;</p>
 
 <h2>Troubles</h2>
+<p>Using environment variables, diagnostic printouts can be reviewed. On Linux, this is like:<br />
+<strong>ES2049PACKAGE_DEBUG=1 $(yarn bin)/rollup --config node:es2049package</strong> which prints configuration data and filenames processed by Babel.<br />Additionally, <strong>ES2049PACKAGE_RESOLVE</strong> prints all resolved import statements, thousands of lines.<br />
+<strong>ES2049PACKAGE_LOAD</strong> prints all files included in the bundle, also in the thousands.</li>
+</p>
 <p>As of February 2018, eslint has a problem in that configuration extends statements in eslint configuration files are resolved by the eslint path, not the eslint.rc path. Impact is that if es2049package, that holds eslint, is symlinked from an out-of-project-tree location, the extends file may not be found. <a href=https://github.com/eslint/eslint/issues/9904>eslint #9904</a></p>
 
 <p>© <a href=http://haraldrudell.com>Harald Rudell</a> created <strong>ECMAScript 2049</strong> in December 2017. ISC License</p>
