@@ -13,7 +13,7 @@ export default function logPlugin(withStack) {
   /*
   Rollup plugins
   in the rollup config object, there is an array of plugins.
-  A rollup plugin is a function that can be imported from another modukle or package
+  A rollup plugin is a function that can be imported from another module or package
   In the plugin array, it is typically executed so that the actual value is an object with name and hook keys
   hooks are listed below
 
@@ -36,7 +36,7 @@ export default function logPlugin(withStack) {
     name: 'logPlugin',
 
     /*
-    if rollup configuration is an array, files are processed in sequence
+    if rollup configuration is an array, each element representing a bundle file is processed in sequence
 
     for an input file: resolveId, load and transform are invoked for each import
     then into-outro are invoked
@@ -44,12 +44,12 @@ export default function logPlugin(withStack) {
     */
     resolveId(importee, importer) {
       /*
-      importee: the tring provided in the import statement like 'src/rollup.config'
+      importee: string provided in the import statement like 'src/rollup.config'
       importer: a previously resolved id, an absolute filename
       importer may be undefined
       may return promise value
       - null undefined: this resolver defers to other resolvers
-      - falsey other than  null undefined: this module is external
+      - falsey other than null undefined: this module is external
       - string: this is the id module filename to be loaded
       */
       const s = `importee: ${importee}` + (importer ? ` importer: ${importer}` : '')

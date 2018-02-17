@@ -3,12 +3,16 @@
 This source code is licensed under the ISC-style license found in the LICENSE file in the root directory of this source tree.
 */
 import RollupConfigurator from './RollupConfigurator'
-import chmod from './chmodPlugin'
-import warningsMuffler from './warningsMuffler'
-import cleanPlugin from './cleanPlugin'
-import printBabelFilenames from './babelPrintFilename'
+import chmod from './rollupChmodPlugin'
+import warningsMuffler from './rollupWarningsMuffler'
+import cleanPlugin from './rollupCleanPlugin'
+import printPlugin from './rollupPrintPlugin'
+import babelPrintFilenames from './babelPrintFilenamePlugin'
 import eslintJson from './eslintrc.json'
+import pjson from '../package.json'
+import sha256Plugin from './rollupSha256Plugin'
 
+// project-external rollup plugins
 import babel from 'rollup-plugin-babel'
 import resolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
@@ -16,6 +20,7 @@ import eslint from 'rollup-plugin-eslint'
 import json from 'rollup-plugin-json'
 import shebangPlugin from 'rollup-plugin-shebang'
 
+// project-external babel presets and plugins
 //import babelEslint from 'babel-eslint'
 import env from 'babel-preset-env'
 import stage0 from 'babel-preset-stage-0'
@@ -31,16 +36,26 @@ import resolvePackage from 'resolve'
 import util from 'util'
 import fs from 'fs'
 import path from 'path'
-import {Hash} from 'crypto'
 
 const babelEslint = 'babel-eslint'
 let eslintBaseOptions
 
 const cwd = process.cwd()
 
+// these output 1,000s of lines
+const debug = Boolean(process.env.ES2049PACKAGE_DEBUG)
+const printRollupResolve = Boolean(process.env.ES2049PACKAGE_RESOLVE)
+const printRollupLoad = Boolean(process.env.ES2049PACKAGE_LOAD)
+const useRollupPrintPlugin = printRollupResolve || printRollupLoad
+if (debug || printRollupResolve || printRollupLoad) {
+  const name = String(Object(pjson).name || 'name: UNKNOWN')
+  const version = String(Object(pjson).version || 'version: UNKNOWN')
+  console.log(`${name} version: ${version} ${new Date().toISOString()} debug: `, {debug, printRollupResolve, printRollupLoad})
+}
+
 export default new RollupConfigurator().assembleConfig(getConfig)
 
-function getConfig({input, output, external, targets, shebang, clean, print, eslint: useEslint, dependenciesFlag}) {
+function getConfig({input, output, external, targets, shebang, clean, eslint: useEslint, dependenciesFlag}) {
   const latestNode = targets && targets.node === 'current'
   const isMini = targets === 'mini'
   const includeExclude = {
@@ -72,12 +87,12 @@ function getConfig({input, output, external, targets, shebang, clean, print, esl
     output,
     external,
     onwarn: warningsMuffler,
-    plugins: [
+    plugins: (useRollupPrintPlugin ? [printPlugin({ids: printRollupResolve, files: printRollupLoad, debug})] : []).concat([
       /*
       rollup-plugin-eslint https://github.com/TrySound/rollup-plugin-eslint
       CLIEngine options: https://eslint.org/docs/developer-guide/nodejs-api#cliengine
       */
-      eslint(rollupEslintOptions = {...includeExclude, ...(useEslint ? getEslintBaseOptions() : {})}),
+      eslint(rollupEslintOptions = {...includeExclude, cwd: process.cwd(), ...(useEslint ? getEslintBaseOptions() : {})}),
       /*
       rollup-plugin-node-resolve https://www.npmjs.com/package/rollup-plugin-node-resolve
       locates modules in node_module directories and parent node_module directories
@@ -104,14 +119,14 @@ function getConfig({input, output, external, targets, shebang, clean, print, esl
         }),
         presets: isMini ? []
           : [[env, {modules: false, targets}], stage0],
-        plugins: isMini ? [
+        plugins: (isMini ? [
             dynamicImportNode,
             transformClassProperties,
             transformExportExtensions,
             transformObjectRestSpread,
-          ] : [externalHelpers]
-            .concat(!latestNode ? [transformRuntime] : [])
-            .concat(print ? [printBabelFilenames] : []),
+          ]
+          : [externalHelpers].concat(!latestNode ? [transformRuntime] : [])
+          ).concat(debug ? [babelPrintFilenames({debug})] : []),
         ...includeExclude}), // only process files from the project
       /*
       rollup-plugin-commonjs https://github.com/rollup/rollup-plugin-commonjs
@@ -120,19 +135,13 @@ function getConfig({input, output, external, targets, shebang, clean, print, esl
       if imported modules are in common js format (using exports) rollup-plugin-commonjs is required
       */
       commonjs(),
-    ].concat(shebang ? [shebangPlugin(), chmod()] : [])
+    ]).concat(shebang ? [shebangPlugin(), chmod()] : [])
       .concat(clean ? cleanPlugin(clean) : [])
-      .concat(print ?
-        [{name: 'sha256Plugin', // a rollup plugin
-          onwrite(bundle, data) {
-            const {code} = data
-            console.log(`${path.basename(bundle.file)} bytes: ${code.length} sha256: ${new Hash('sha256').update(code).digest('hex')}`)
-          },
-        }] : []),
+      .concat(debug ? [sha256Plugin({debug})] : []),
   }
   RollupConfigurator.deleteUndefined(config)
 
-  if (print) {
+  if (debug) {
     console.log(`Rollup options for ${input}: ${util.inspect(config, {colors: true, depth: null})}`)
     console.log(`Node Resolve options: ${util.inspect(rollupResolveOptions, {colors: true, depth: null})}`)
     console.log(`Eslint options: ${util.inspect(rollupEslintOptions, {colors: true, depth: null})}`)

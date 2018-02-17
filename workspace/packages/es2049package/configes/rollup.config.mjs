@@ -4,11 +4,11 @@ This source code is licensed under the ISC-style license found in the LICENSE fi
 */
 import pjson from '../package.json'
 import nodeIgnores from '../src/nodepackages.mjs'
-import babelPrintFilename from '../src/babelPrintFilename.mjs'
+import babelPrintFilename from '../src/babelPrintFilenamePlugin.mjs'
 import {convertYaml} from './convertYaml'
+import chmod from '../src/rollupChmodPlugin.mjs'
 
 import babel from 'rollup-plugin-babel'
-import chmod from '../src/chmodPlugin.mjs'
 import commonjs from 'rollup-plugin-commonjs'
 import eslint from 'rollup-plugin-eslint'
 import json from 'rollup-plugin-json'

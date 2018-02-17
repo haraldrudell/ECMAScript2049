@@ -6,10 +6,10 @@ import fs from 'fs'
 
 export default function chmodPlugin(mode) {
   return {
-    name: 'chmodPlugin',
+    name: 'chmod Rollup plugin',
     onwrite(bundle, data) {
-      const filename = bundle && (bundle.file || bundle.dest)
-      if (!filename) throw new Error('chmodPlugin.onwrite: filename missing')
+      const filename = String(bundle && (bundle.file || bundle.dest) || '')
+      if (!filename) throw new Error('chmod Rollup plugin.onwrite: filename missing')
       fs.chmodSync(filename, mode >= 0 ? Number(mode) : 0o755) // rwxr-xr-x
     },
   }

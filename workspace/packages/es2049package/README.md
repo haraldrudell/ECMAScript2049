@@ -76,4 +76,7 @@
 <p>To develop or compile the <strong>ECMAScript 2049</strong> project <strong>Yarn</strong> 1+ and <strong>Node.js current</strong> (v8.5+) are required.</p>
 <p>&emsp;</p>
 
+<h2>Troubles</h2>
+<p>As of February 2018, eslint has a problem in that configuration extends statements in eslint configuration files are resolved by the eslint path, not the eslint.rc path. Impact is that if es2049package, that holds eslint, is symlinked from an out-of-project-tree location, the extends file may not be found. <a href=https://github.com/eslint/eslint/issues/9904>eslint #9904</a></p>
+
 <p>© <a href=http://haraldrudell.com>Harald Rudell</a> created <strong>ECMAScript 2049</strong> in December 2017. ISC License</p>
