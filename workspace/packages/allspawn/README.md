@@ -8,7 +8,7 @@
 <p>Full error handling, ability to capture stdout and stderr as well as the child process object</p>
 
 <h2>Usage</h2>
-<blockquote><strong>import {spawnAsync, spawnCapture, SpawnShim, SpawnAsync} from 'allspawn'</strong></blockquote>
+<blockquote><strong>import {spawnAsync, spawnCapture, SpawnShim, SpawnAsync, SpawnPipe} from 'allspawn'</strong></blockquote>
 <p>&emsp;</p>
 
 <p><strong> async spawnAsync({args, options, cpReceiver, echo, capture, stderrFails, nonZeroOk})</strong><br />
@@ -16,7 +16,7 @@
 &emsp;&emsp;capture: false and nonZeroOk: false: Number 0<br />
 &emsp;&emsp;capture: false and nonZeroOk: true: the status code number returned<br />
 &emsp;&emsp;capture: true: an object {stdout, stderr, status, signal}<br />
-<strong>args</strong>: optional array of string arguments, the first string is the command<br />
+<strong>args</strong>: array of string arguments, the first string is the command<br />
 <strong>options</strong>: optional object as defined by Node.js spawn (cwd env argv0 stdio detached uid gid shell windowsVerbatimArguments windowsHide)<br />
 <strong>options.timeout</strong>: the process is killed if not completing in timeout ms, default infinite<br />
 <strong>options.silent</strong>: optional bolean default false: do not echo to the parent process’ stdout and stderr, ie. if true the child process executes silently.<br />

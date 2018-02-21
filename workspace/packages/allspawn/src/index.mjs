@@ -7,3 +7,4 @@ export {default as SpawnAsync} from './SpawnAsync'
 export const spawnAsync = SpawnAsync.spawnAsync
 export * from './spawnCapture'
 export {default as SpawnShim} from './SpawnShim'
+export {default as SpawnPipe} from './SpawnPipe'

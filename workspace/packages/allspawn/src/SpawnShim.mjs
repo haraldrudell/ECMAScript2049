@@ -12,42 +12,38 @@ export default class SpawnShim {
   constructor(o) {
     const {name, args, options, debug, killTimeout} = o || false
     this.m = String(name || 'SpawnShim')
-    if (typeof args === 'string') {
-      args && (this.cmd = args)
-    } else if (Array.isArray(args)) {
-      args[0] && (this.cmd = args[0])
-      this.args = args.slice(1)
-    } else args && (this.args = args)
+    const isString = typeof args === 'string'
+    const isArray = Array.isArray(args)
+    const cmd = isString ? args : isArray && args[0]
+    cmd && (this.cmd = cmd)
+    (isArray && (this.args = args.slice(1))) || (!isString && args && (this.args = args))
     options && (this.options = options)
     this.killTimeout = killTimeout >= 0 ? +killTimeout : SpawnShim.killTimeout
     debug && (this.debug = true) && this.constructor === SpawnShim && console.log(`${this.m} constructor: ${util.inspect(this, {colors: true, depth: null})}`)
   }
 
   spawn() {
-    // options: cwd env argv0 stdio detached uid gid shell windowsVerbatimArguments windowsHide
-    const {debug, cmd, args, options} = this
-    let cp
-    const setExit = () => (this.isExit = true) && debug && console.log(`${this.m} isExit`)
-    const cpListener = () => setExit() + cp.removeListener('exit', cpListener).removeListener('error', cpListener)
-    try {
-      this.cp = cp = spawn(cmd, args, options).once('exit', cpListener).once('error', cpListener)
-    } catch (e) {
-      setExit()
-      throw e
-    }
+    const {debug, cmd, args, options, m} = this
+    let cp = this.cp = spawn(cmd, args, options).once('exit', listener).once('error', listener)
     this.promise = new Promise((resolve, reject) => {
       let e
       cp.once('close', (status, signal) => resolve({e, status, signal}))
         .on('error', ee => !e && (e = ee)) // subsequent errors are ignored
     })
     return cp
+
+    function listener() {
+      this.hadExit = true
+      cp.removeListener('exit', listener).removeListener('error', listener)
+      debug && console.log(`${m} process exited`)
+    }
   }
 
   async abortProcess() {
-    const {cp, isExit, debug, killTimeout} = this
+    const {cp, hadExit, debug, killTimeout, m} = this
     const {killed} = cp || false
-    debug && console.log(`${this.m} abortProcess: cp: ${!!cp} isExit: ${isExit} killed: ${killed}`)
-    if (!cp || isExit) return
+    debug && console.log(`${this.m} abortProcess: cp: ${!!cp} hadExit: ${hadExit} killed: ${killed}`)
+    if (!cp || hadExit) return
 
     await new Promise((resolve, reject) => {
       cp.once('exit', listener).once('error', listener)
@@ -65,13 +61,13 @@ export default class SpawnShim {
       function doSigKill() {
         try {
           timer = null
-          debug && console.log(`${this.m} abortProcess: SIGKILL…`)
+          debug && console.log(`${m} abortProcess: SIGKILL…`)
           cp.kill('SIGKILL') // kill -9
         } catch (e) {
           reject(e)
         }
       }
     })
-    debug && console.log(`${this.m} abortProcess: exit complete: isExit: ${this.isExit}`)
+    debug && console.log(`${this.m} abortProcess: exit complete: hadExit: ${this.hadExit}`)
   }
 }

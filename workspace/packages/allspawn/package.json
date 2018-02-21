@@ -1,6 +1,6 @@
 {
   "name": "allspawn",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Async spawn by Harald Rudell",
   "author": "Harald Rudell <harald.rudell@gmail.com> (http://haraldrudell.com)",
   "license": "ISC",
