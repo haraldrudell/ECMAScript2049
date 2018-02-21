@@ -21,20 +21,15 @@ export default class SpawnPipe extends SpawnShim {
     }
     const {silent} = this
     const {stdio: stdio0} = options
-    const stdio = options.stdio = Array.isArray(stdio0) ? stdio0 : typeof(stdio0) === 'string' ? new Array(3).fill(stdio0) : ['ignore', 'inherit', 'inherit']
+    const defOut = silent ? 'pipe' : 'inherit'
+    const stdio = options.stdio = Array.isArray(stdio0) ? stdio0 : typeof(stdio0) === 'string' ? new Array(3).fill(stdio0) : ['ignore', defOut, defOut]
     if (capture) {
       stdio[1] = stdio[2] = 'pipe'
-      if (stdio[0] === undefined) stdio[1] = 'ignore'
-    } else {
-      if (silent) {
-        stdio[1] = stdio[2] = 'ignore'
-        if (stdio[0] === undefined) stdio[1] = 'ignore'
-      }
-      if (stderrFails) {
-        stdio[2] = 'pipe'
-        if (stdio[1] === undefined) stdio[1] = 'ignore'
-        if (stdio[0] === undefined) stdio[1] = 'ignore'
-      }
+      if (stdio[0] === undefined) stdio[0] = 'ignore'
+    } else if (stderrFails) {
+      stdio[2] = 'pipe'
+      if (stdio[0] === undefined) stdio[0] = 'ignore'
+      if (stdio[1] === undefined) stdio[1] = 'ignore'
     }
   }
 

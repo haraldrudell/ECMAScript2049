@@ -14,7 +14,7 @@ export default class SpawnAsync extends SpawnPipe {
   }
 
   constructor(o) {
-    super(Object.assign({name: 'SpawnAsync'}, o))
+    super({name: 'SpawnAsync', ...o})
     const {cpReceiver, echo, nonZeroOk} = o || false
     echo && (this.echo = true)
     nonZeroOk && (this.nonZeroOk = true)
@@ -23,51 +23,41 @@ export default class SpawnAsync extends SpawnPipe {
     const {timeout} = options
     this.timeout = timeout >= 0 ? +timeout : 0
     for (let p of SpawnAsync.optionsProperties) delete options[p]
-    debug && console.log(`${this.m} constructor:`, this)
+    debug && this.constructor === SpawnAsync && console.log(`${this.m} constructor:`, this)
   }
 
   async startSpawn() {
     const {timeout, onTimeout, debug} = this
-    const [result] = await Promise.all([
-      this.launchProcess(),
-    ].concat(timeout > 0
-      ? [(this.timer = new Timer({timeout, onTimeout, debug})).start()]
-      : []
-    ))
+    const ps = [this.launchProcess()]
+    timeout > 0 && ps.push((this.timer = new Timer({timeout, onTimeout, debug})).start())
+    const [result] = await Promise.all(ps)
     return result
   }
 
   async launchProcess() {
-    const {echo, cmdString, cpReceiver, debug} = this
+    const {echo, cpReceiver, debug} = this
 
     // launch the child process
-    echo && console.log(cmdString)
+    echo && console.log(this.cmdString())
     const cp = this.spawn()
     cpReceiver && (cpReceiver.cp = cp)
-    if (debug) {
-      const cpEmit = cp.emit.bind(cp)
-      cp.emit = (...args) => console.log('cpEvent:', args) + cpEmit(...args)
-    }
 
     // await child process exit
     const [{e, status, signal}, {stdout, stderr, isStderr}] = await Promise.all([this.promise, this.startCapture()])
 
     // handle timeout
-    const {isTimeout, timer, nonZeroOk} = this
+    const {isTimeout, timer, timeout, nonZeroOk} = this
     debug && console.log(`${this.m} process exit:`, {e, status, signal, stdout: stdout && stdout.length, stderr: stderr && stderr.length, isStderr, isTimeout, ss: stdout})
     if (isTimeout) {
-      throw this.setErrorProps(new Error(`Process timeout: ${(this.timeout / 1e3).toFixed(1)} s: ${cmdString}`))
+      throw this.setErrorProps(new Error(`Process timeout: ${(timeout / 1e3).toFixed(1)} s: ${this.cmdString()}`))
     } else timer && timer.cancel()
 
     // handle error from child process
     if (e) throw this.setErrorProps(e)
     if ((status && !nonZeroOk) || signal) throw this.getError({status, signal})
+    if (isStderr) throw this.setErrorProps(new Error(`Output on standard error: ${this.cmdString()}: '${stderr}'`), {stderr: this.trimEnd(stderr)})
 
-    if (isStderr) throw this.setErrorProps(new Error(`Output on standard error: ${cmdString}: '${stderr}'`), {stderr: this.trimEnd(stderr)})
-
-    if (stdout === undefined) return status
-
-    return {stdout, stderr}
+    return stdout === undefined ? status : {stdout, stderr}
   }
 
   onTimeout() {
@@ -83,10 +73,9 @@ export default class SpawnAsync extends SpawnPipe {
   }
 
   getError({status, signal}) {
-    const {cmdString} = this
     let msg = `status code: ${status}`
     if (signal) msg += ` signal: ${signal}`
-    msg += ` '${cmdString}'`
+    msg += ` '${this.cmdString()}'`
     const e = new Error(msg)
     Object.assign(e, {status})
     if (signal) Object.assign(e, {signal})
@@ -96,5 +85,10 @@ export default class SpawnAsync extends SpawnPipe {
   setErrorProps(e, o) {
     const {cmd, args} = this
     return Object.assign(e, {cmd, args}, o)
+  }
+
+  cmdString() {
+    const {cmd, args} = this
+    return `${cmd || ''} ${Array.isArray(args) ? args.join('\x20') : ''}`
   }
 }

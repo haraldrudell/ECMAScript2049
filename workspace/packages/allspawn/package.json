@@ -1,6 +1,6 @@
 {
   "name": "allspawn",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Async spawn by Harald Rudell",
   "author": "Harald Rudell <harald.rudell@gmail.com> (http://haraldrudell.com)",
   "license": "ISC",
@@ -42,5 +42,8 @@
     "es2049package": "^0.0.23",
     "jest": "^22.0.6",
     "npm-run-all": "^4.1.2"
+  },
+  "dependencies": {
+    "allspawn": "^0.2.2"
   }
 }
