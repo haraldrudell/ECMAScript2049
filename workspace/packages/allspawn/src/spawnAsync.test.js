@@ -3,41 +3,43 @@
 This source code is licensed under the ISC-style license found in the LICENSE file in the root directory of this source tree.
 */
 import pjson from '../package.json'
+import path from 'path'
 
 import fs from 'fs-extra'
 
-import path from 'path'
 import childProcess from 'child_process'
 const {ChildProcess, execSync} = childProcess
 
-const {main} = Object(pjson)
-if (!main || typeof main !== 'string') throw new Error(`package.json main not non-empty string`)
-
-const projectDir = path.resolve()
-const allSpawnAbsolute = path.resolve(projectDir, main)
-const srcDir = path.resolve('src')
-const allspawnRelative = path.relative(srcDir, allSpawnAbsolute)
-
+let exportName = 'spawnAsync'
 let spawnAsync
 
 test('yarn build should have completed', async () => {
-  let allspawn
-  let e
+  const {main} = Object(pjson)
+  if (!main || typeof main !== 'string') throw new Error(`package.json main not non-empty string`)
+
+  const projectDir = path.resolve()
+  const mainAbsolute = path.resolve(projectDir, main)
+  const srcDir = path.resolve('src')
+  const mainRelative = path.relative(srcDir, mainAbsolute)
+
+  let packageExports
   try {
-    allspawn = require(allspawnRelative)
-  } catch (ee) {
-    e = ee
+    packageExports = require(mainRelative)
+  } catch (e) {
+    expect(`failed to require: '${mainRelative}' from package.json main: '${main}': Error: ${e.message}`).toBeNull()
   }
-  if (e) expect(`failed to require: '${main}': Error: ${e.message}`).toBeNull()
-  expect(typeof allspawn).toBe('object')
-  spawnAsync = allspawn.spawnAsync
-  expect(typeof spawnAsync).toBe('function')
+  expect(typeof packageExports).toBe('object')
+  const exportValue = packageExports[exportName]
+  expect(typeof exportValue).toBe('function')
+
+  spawnAsync = exportValue
 })
 
 test('spawnAsync can launch node', async () => {
   const o = {
     args: ['node', '--version'],
     options: {silent: true},
+    //debug: true,
   }
   const statusCode = await spawnAsync(o)
   expect(statusCode).toBe(0)
@@ -139,6 +141,7 @@ test('spawnAsync timeout works', async () => {
   const o = {
     args: ['node', '--eval', 'setTimeout(() => 1, 1e3)'],
     options: {silent: true, timeout: 1},
+    //debug: true,
   }
   let e
   await spawnAsync(o).catch(ee => e = ee)

@@ -7,26 +7,26 @@ const {Stream} = stream
 
 export default class Capturer {
   text = ''
-  onClose = this.onClose.bind(this)
 
   constructor(o) {
-    const {input, pipe} = o || false
-    if (!(input instanceof Stream)) throw new Error(`Capturer: input not stream: ${typeof input}`)
-    this.promise = new Promise((resolve, reject) => (this._resolve = resolve) + (this._reject = reject))
-    input.on('data', this.dataListener)
-      .once('close', this.onClose)
-      .setEncoding('utf8')
+    const {input, pipe} = Object(o)
+    const m = 'Capturer'
+    if (!(input instanceof Stream)) throw new Error(`${m}: input not stream: ${typeof input}`)
+    this.input = input
     if (pipe) {
-      if (!(pipe instanceof Stream)) throw new Error(`Capturer: pipe not stream: ${typeof pipe}`)
-      input.pipe(pipe)
+      if (!(pipe instanceof Stream)) throw new Error(`${m}: pipe not stream: ${typeof pipe}`)
+      this.pipe = pipe
     }
   }
 
-  onClose() {
-    this._resolve(this.text)
+  async capture() {
+    const {input, pipe} = this
+    return new Promise((resolve, reject) =>
+      input.on('data', text => this.saveText(text).catch(reject))
+        .once('close', () => resolve(this.text))
+        .setEncoding('utf8') +
+      (pipe && input.pipe(pipe)))
   }
-
-  dataListener = text => this.saveText(text).catch(this._reject)
 
   async saveText(text) {
     this.text += text

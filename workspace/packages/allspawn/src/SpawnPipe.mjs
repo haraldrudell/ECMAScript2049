@@ -6,21 +6,23 @@ import Capturer from './Capturer'
 import SpawnShim from './SpawnShim'
 
 export default class SpawnPipe extends SpawnShim {
-  static pipeOptions = Object.keys({maxBuffer: 1, silent: 1})
-  static maxBuffer = 200*1024
+  static maxBuffer0 = 200*1024
 
   constructor(o) {
     super(o)
-    const {capture, stderrFails} = o || false
+    const {capture, stderrFails} = Object(o)
+    const {options: options0} = this
+    const {maxBuffer0} = SpawnPipe
     capture && (this.capture = true)
     stderrFails && (this.stderrFails = true)
-    const options = this.options = {...this.options}
-    for (let p of SpawnPipe.pipeOptions) if (options.hasOwnProperty(p)) {
-      options[p] && (this[p] = true)
-      delete options[p]
+    const options = options0 != null ? options0 : (this.options = {}) // where to store stdio value
+    const {maxBuffer, silent, stdio: stdio0} = options
+    if (options0 != null) {
+      delete options.maxBuffer
+      delete options.silent
     }
-    const {silent} = this
-    const {stdio: stdio0} = options
+    this.maxBuffer = maxBuffer >= 0 ? +maxBuffer : maxBuffer0
+    silent && (this.silent = true)
     const defOut = silent ? 'pipe' : 'inherit'
     const stdio = options.stdio = Array.isArray(stdio0) ? stdio0 : typeof(stdio0) === 'string' ? new Array(3).fill(stdio0) : ['ignore', defOut, defOut]
     if (capture) {
@@ -43,9 +45,9 @@ export default class SpawnPipe extends SpawnShim {
   }
 
   async doCapture() {
-    const {cp, silent, stderrFails} = this
-    const capturers = ['stdout', 'stderr'].map(stream => new Capturer({input: cp[stream], pipe: !silent && process[stream]}))
-    const [stdout, stderr] = await Promise.all(capturers.map(c => c.promise))
+    const {cp, silent, stderrFails, maxBuffer} = this
+    const [stdout, stderr] = await Promise.all(['stdout', 'stderr'].map(stream =>
+      new Capturer({input: cp[stream], pipe: !silent && process[stream], maxBuffer}).capture()))
     const isStderr = stderrFails && !!stderr
     return {stdout, stderr, isStderr}
   }

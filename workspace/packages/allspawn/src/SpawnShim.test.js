@@ -3,13 +3,14 @@
 This source code is licensed under the ISC-style license found in the LICENSE file in the root directory of this source tree.
 */
 import pjson from '../package.json'
+import path from 'path'
 
 import fs from 'fs-extra'
 
-import path from 'path'
 import childProcess from 'child_process'
 const {ChildProcess} = childProcess
 
+let exportName = 'SpawnShim'
 let SpawnShim
 
 test('yarn build should have completed', () => {
@@ -17,31 +18,67 @@ test('yarn build should have completed', () => {
   if (!main || typeof main !== 'string') throw new Error(`package.json main not non-empty string`)
 
   const projectDir = path.resolve()
-  const allSpawnAbsolute = path.resolve(projectDir, main)
+  const mainAbsolute = path.resolve(projectDir, main)
   const srcDir = path.resolve('src')
-  const allspawnRelative = path.relative(srcDir, allSpawnAbsolute)
+  const mainRelative = path.relative(srcDir, mainAbsolute)
 
-  let allspawn
-  let e
+  let packageExports
   try {
-    allspawn = require(allspawnRelative)
-  } catch (ee) {
-    e = ee
+    packageExports = require(mainRelative)
+  } catch (e) {
+    expect(`failed to require: '${mainRelative}' from package.json main: '${main}': Error: ${e.message}`).toBeNull()
   }
-  if (e) expect(`failed to require: '${main}': Error: ${e.message}`).toBeNull()
-  expect(typeof allspawn).toBe('object')
-  SpawnShim = allspawn.SpawnShim
-  expect(typeof SpawnShim).toBe('function')
+  expect(typeof packageExports).toBe('object')
+  const exportValue = packageExports[exportName]
+  expect(typeof exportValue).toBe('function')
+
+  SpawnShim = exportValue
 })
 
-test('SpawnShim', async () => {
-  const spawnShim = new SpawnShim({args: ['node', '--version']})
-  const cp = spawnShim.spawn()
+test('SpawnShim.spawn should be able to run node', async () => {
+  const o = {
+    args: ['node', '--version'],
+    //debug: true,
+  }
+  const spawnShim = new SpawnShim(o)
+
+  const actual = spawnShim.spawn()
+  expect(typeof actual).toBe('object')
+  const {cp, promise} = actual
   expect(cp).toBeInstanceOf(ChildProcess)
-  const {promise} = spawnShim
   expect(promise).toBeInstanceOf(Promise)
-  const resolve = await promise
-  expect(typeof resolve).toBe('object')
-  expect(resolve.status).toBe(0)
+
+  const resolution = await promise
+  expect(typeof resolution).toBe('object')
+  const {e, status, signal} = resolution
+  expect(status).toBe(0)
+  expect(e).toBeFalsy()
+  expect(signal).toBeFalsy()
 })
 
+test('SpawnShim.spawn status should work', async () => {
+  const status0 = 3
+  const o = {
+    args: ['node', '--eval', `process.exit(${status0})`],
+  }
+  const actual = await new SpawnShim(o).spawn().promise
+  expect(typeof actual).toBe('object')
+  const {status} = actual
+  expect(status).toBe(status0)
+})
+
+test('SpawnShim.abortprocess should work', async () => {
+  const SIGTERM = 'SIGTERM'
+  const o = {
+    args: ['node', '--eval', `console.log(); for(;;) ;`],
+    //debug: true,
+  }
+  const spawnShim = new SpawnShim(o)
+  const {cp, promise} = spawnShim.spawn()
+  new Promise((resolve, reject) => cp.stdout.on('data', resolve))
+  await spawnShim.abortProcess()
+  const actual = await promise // {e: undefined, status: null, signal: }
+  expect(actual).toBeTruthy()
+  const {signal} = actual
+  expect(signal).toBe(SIGTERM)
+})
