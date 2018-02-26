@@ -81,8 +81,14 @@ test('spawnAsync capture+stderrFails works', async () => {
     options: {silent: true},
   }
   let e
-  const {stdout, stderr} = await spawnAsync(o).catch(ee => e = ee)
+  await spawnAsync(o).catch(ee => e = ee)
   expect(e).toBeInstanceOf(Error)
+  /*
+  Error: Output on standard error: node --eval console.error('nodestderr'): 'nodestderr'
+  cmd: 'node'
+  args: [ '--eval', 'console.error(\'nodestderr\')' ]
+  stderr: 'nodestderr'
+  */
   if (!e.stderr) throw e // some other error
   expect(e.stderr).toBe(nodestderr)
 })

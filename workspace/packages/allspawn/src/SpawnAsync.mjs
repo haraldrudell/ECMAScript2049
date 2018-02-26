@@ -51,9 +51,10 @@ export default class SpawnAsync extends SpawnPipe {
     else clearTimer && clearTimer()
 
     // handle error from child process
-    if (e) throw this.setErrorProps(e)
-    if ((status && !nonZeroOk) || signal) throw this.getError({status, signal})
-    if (isStderr) throw this.setErrorProps(new Error(`Output on standard error: ${this.cmdString()}: '${stderr}'`), {stderr: this.trimEnd(stderr)})
+    const eText = stderr && this.trimEnd(stderr)
+    if (e) throw this.setErrorProps(e, eText)
+    if ((status && !nonZeroOk) || signal) throw this.getError({status, signal}, eText)
+    if (isStderr) throw this.setErrorProps(new Error(`Output on standard error: ${this.cmdString()}: '${eText}'`), eText)
 
     return stdout === undefined ? status : {stdout, stderr}
   }
@@ -61,12 +62,12 @@ export default class SpawnAsync extends SpawnPipe {
   setTimer() {
     const {timeout} = this
     return timeout && new Promise((resolve, reject) => {
-      const timer = setTimeout(() => this.onTimeout().then(resolve, reject), timeout)
+      const timer = setTimeout(() => this._onTimeout().then(resolve, reject), timeout)
       this.clearTimer = () => clearTimeout(timer) + resolve()
     })
   }
 
-  async onTimeout() {
+  async _onTimeout() {
     const {debug} = this
     debug && console.log(`${this.m} child process timeout`)
     this.isTimeout = true
@@ -77,14 +78,14 @@ export default class SpawnAsync extends SpawnPipe {
     return typeof s === 'string' && s.endsWith('\n') ? s.slice(0, -1) : s
   }
 
-  getError({status, signal}) {
+  getError({status, signal}, stderr) {
     this.setErrorProps(new Error(`status code: ${status}${signal ? ` signal: ${signal}` : ''} '${this.cmdString()}'`),
-      {status}, signal ? {signal} : null)
+      stderr, Object.assign({status}, signal ? {signal} : null))
   }
 
-  setErrorProps(e, o, o2) {
+  setErrorProps(e, stderr, o) {
     const {cmd, args} = this
-    return Object.assign(e, {cmd, args}, o, o2)
+    return Object.assign(e, {cmd, args}, o, stderr ? {stderr} : null)
   }
 
   cmdString() {

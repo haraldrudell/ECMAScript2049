@@ -56,7 +56,7 @@ export default class SpawnPipe extends SpawnShim {
     const {cp: {stderr: stream}} = this
     const stderr = await new Promise((resolve, reject) => stream
       .once('data', text => text && resolve(text))
-      .once('close', () => resolve())
+      .once('close', resolve)
       .setEncoding('utf8'))
     const isStderr = !!stderr
     return {stderr, isStderr}

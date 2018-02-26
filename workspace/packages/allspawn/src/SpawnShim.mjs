@@ -28,7 +28,7 @@ export default class SpawnShim {
     const cp = this.cp = spawn(cmd, args, options) // may throw
     const promise = new Promise((resolve, reject) => {
       let e
-      const exitListener = this.exitListener = async () => this._exitListener().catch(reject)
+      const exitListener = () => cp.removeListener('exit', exitListener).removeListener('error', exitListener) + this._exitListener().catch(reject)
       cp.once('close', (status, signal) => resolve({e, status, signal}))
         .on('error', ee => !e && (e = ee)) // subsequent errors are ignored
         .once('exit', exitListener).once('error', exitListener)
@@ -37,10 +37,8 @@ export default class SpawnShim {
   }
 
   async _exitListener() {
-    const {cp, exitListener, debug} = this
+    const {debug} = this
     this.hadExit = true
-    this.exitListener = null
-    cp && cp.removeListener('exit', exitListener).removeListener('error', exitListener)
     debug && console.log(`${this.m} process exited`)
   }
 
@@ -52,20 +50,20 @@ export default class SpawnShim {
     let cancelTimer
     await Promise.all([
       new Promise((resolve, reject) => {
-        const timer = killTimeout && setTimeout(() => this.doSigKill(cp).then(resolve, reject), killTimeout)
+        const timer = killTimeout && setTimeout(() => this._doSigKill(cp).then(resolve, reject), killTimeout)
         cancelTimer = () => (timer && clearTimeout(timer)) + resolve()
       }),
       new Promise((resolve, reject) => {
         const onProcessExit = () => cp.removeListener('exit', onProcessExit).removeListener('error', onProcessExit) + cancelTimer() + resolve()
         cp.once('exit', onProcessExit).once('error', onProcessExit)
-        this.maybeKill(cp)
+        this._maybeKill(cp)
       }),
     ])
 
     debug && console.log(`${this.m} abortProcess: exit complete: hadExit: ${this.hadExit}`)
   }
 
-  maybeKill(cp) {
+  _maybeKill(cp) {
     const {debug} = this
     const {killed} = cp
     if (!killed) {
@@ -74,7 +72,7 @@ export default class SpawnShim {
     }
   }
 
-  async doSigKill(cp) {
+  async _doSigKill(cp) {
     const {debug} = this
     debug && console.log(`${this.m} sending SIGKILL…`)
     cp.kill('SIGKILL') // kill -9
