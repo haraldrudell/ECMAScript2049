@@ -97,6 +97,7 @@ test('spawnAsync stderrFails no throw works', async () => {
   const o = {
     args: ['node', '--version'],
     stderrFails: true,
+    options: {silent: true},
   }
   const statusCode = await spawnAsync(o)
   expect(statusCode).toBe(0)

@@ -13,11 +13,12 @@ export default class SpawnAsync extends SpawnPipe {
 
   constructor(o) {
     super({name: 'SpawnAsync', ...o})
-    const {cpReceiver, echo, nonZeroOk, debug} = Object(o)
+    const {cpReceiver, echo, nonZeroOk, signalOk, debug} = Object(o)
     const {options} = this
     const {timeout} = options
     echo && (this.echo = true)
     nonZeroOk && (this.nonZeroOk = true)
+    signalOk && (this.signalOk = true)
     cpReceiver && (this.cpReceiver = cpReceiver)
     if (timeout != null) {
       timeout > 0 && (this.timeout = +timeout)
@@ -53,10 +54,13 @@ export default class SpawnAsync extends SpawnPipe {
     // handle error from child process
     const eText = stderr && this.trimEnd(stderr)
     if (e) throw this.setErrorProps(e, eText)
-    if ((status && !nonZeroOk) || signal) throw this.getError({status, signal}, eText)
+    if ((status && !nonZeroOk) || (signal && !signalOk)) throw this.getError({status, signal}, eText)
     if (isStderr) throw this.setErrorProps(new Error(`Output on standard error: ${this.cmdString()}: '${eText}'`), eText)
 
-    return stdout === undefined ? status : {stdout, stderr}
+    if (stdout === undefined) return status || signal || 0
+    const result = {status, stdout, stderr}
+    signal && (result.signal = signal)
+    return result
   }
 
   setTimer() {

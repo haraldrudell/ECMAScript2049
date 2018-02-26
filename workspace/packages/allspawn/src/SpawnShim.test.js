@@ -70,7 +70,8 @@ test('SpawnShim.spawn status should work', async () => {
 test('SpawnShim.abortprocess should work', async () => {
   const SIGTERM = 'SIGTERM'
   const o = {
-    args: ['node', '--eval', `console.log(); for(;;) ;`],
+    args: ['node', '--eval', `console.log(); setTimeout(() => 1, 1e3)`],
+    options: {silent: true},
     //debug: true,
   }
   const spawnShim = new SpawnShim(o)

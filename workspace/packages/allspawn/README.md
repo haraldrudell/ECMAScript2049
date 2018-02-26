@@ -13,9 +13,10 @@
 
 <p><strong> async spawnAsync({args, options, cpReceiver, echo, capture, stderrFails, nonZeroOk})</strong><br />
 &emsp;resolves to:<br/>
-&emsp;&emsp;capture: false and nonZeroOk: false: Number 0<br />
-&emsp;&emsp;capture: false and nonZeroOk: true: the status code number returned<br />
-&emsp;&emsp;capture: true: an object {stdout, stderr, status, signal}<br />
+&emsp;&emsp;capture: false: Number 0<br />
+&emsp;&emsp;&emsp;nonZeroOk: true: may return non-zero number<br />
+&emsp;&emsp;&emsp;signalOk: true: may return string signal like 'SIGTERM'<br />
+&emsp;&emsp;capture: true: {stdout, stderr, status, signal}<br />
 <strong>args</strong>: array of string arguments, the first string is the command<br />
 <strong>options</strong>: optional object as defined by Node.js spawn (cwd env argv0 stdio detached uid gid shell windowsVerbatimArguments windowsHide)<br />
 <strong>options.timeout</strong>: the process is killed if not completing in timeout ms, default infinite<br />
@@ -25,7 +26,8 @@
 <strong>echo</strong>: optional boolean, default false: command and arguments are printed<br />
 <strong>capture</strong>: optional boolean, default false: stdout and stderr are captured, up to <strong>options.maxBuffer</strong> bytes (200 KiB)<br />
 <strong>stderrFails</strong>: optional boolean, default false: any output to stderr will cause error. If capture is true, the error is thrown at end of process, otherwise on first print.<br />
-<strong>nonZeroOk</strong>: optional boolean, default false: if the child process reurns a status  code other than zero, return it instead of throwing an error.</p>
+<strong>nonZeroOk</strong>: optional boolean, default false: if the child process reurns a status  code other than zero, return it instead of throwing an error.</br />
+<strong>signalOk</strong>: optional boolean, default false: if the child process is terminated by a signal, the signal string is returned instead of an error thrown.</p>
 <p>&emsp;</p>
 
 <p><strong>{stdout} async spawnCapture({args, …})</strong><br />
