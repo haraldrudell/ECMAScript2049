@@ -1,5 +1,5 @@
 <h1>ECMAScript 2049 Package</h1>
-<img src=https://raw.githubusercontent.com/haraldrudell/ECMAScript2049/HEAD/workspace/packages/es2049scripts/assets/ECMAScript%202049.png alt="ECMAScript 2049" />
+<img src=https://raw.githubusercontent.com/haraldrudell/ECMAScript2049/HEAD/assets/ECMAScript%202049.png alt="ECMAScript 2049" />
 <p><strong>ERASE THE PAST</strong></p>
 <p>&emsp;</p>
 <p>© <a href=http://haraldrudell.com>Harald Rudell</a> created <strong>ECMAScript 2049</strong> in December 2017. ISC License</p>
@@ -8,8 +8,8 @@
 <p>This is the <strong>es2049package</strong> package</p>
 <p>Repository links:<br />
 <strong><a href=https://github.com/haraldrudell/ECMAScript2049>ECMAScript 2049</a></strong> the monolithic repository<br />
-<strong><a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/workspace/packages/es2049scripts>es2049scripts</a></strong> providing build-scripts written in <strong>ES.Next</strong><br />
-<strong><a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/workspace/packages/allspawn>allspawn</a></strong> async/promise command execution</p>
+<strong><a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/packages/es2049scripts>es2049scripts</a></strong> providing build-scripts written in <strong>ES.Next</strong><br />
+<strong><a href=https://github.com/haraldrudell/ECMAScript2049/tree/master/packages/allspawn>allspawn</a></strong> async/promise command execution</p>
 
 <h2>Benefits</h2>
 <p><strong>es2049package</strong> allows a library or command-line utility to be compiled with only one installed dependency and no configuration files.</p>
@@ -30,10 +30,10 @@
 <ul>
   <li>If building a Node.js library, consider newer than default <strong>rollup.targets</strong>: 6.10, like <strong>"targets": {"node": 8}</strong>. Ensure proper <strong>main</strong>, <strong>module</strong> are set in package.json</li>
   <li>If writing a command-line executable set <strong>rollup.shebang</strong>: true and if self-contained <strong>"dependencies": false</strong>. Possibly use <strong>"targets": "mini"</strong></li>
-  <li>It does work, here is a functional <a href=https://github.com/haraldrudell/ECMAScript2049/blob/master/workspace/packages/allspawn/package.json>package.json</a></li>
+  <li>It does work, here is a functional <a href=https://github.com/haraldrudell/ECMAScript2049/blob/master/packages/allspawn/package.json>package.json</a></li>
   <li>If it seems mysterious, use <strong>ES2049PACKAGE_DEBUG</strong> and possibly <strong>ES2049PACKAGE_RESOLVE</strong> or <strong>ES2049PACKAGE_LOAD</strong> as described below</li>
 </ul>
-<p>A package.json using <strong>es2049package</strong> can be found <strong><a href=https://github.com/haraldrudell/ECMAScript2049/blob/master/workspace/packages/allspawn/package.json>here</a></strong></p>
+<p>A package.json using <strong>es2049package</strong> can be found <strong><a href=https://github.com/haraldrudell/ECMAScript2049/blob/master/packages/allspawn/package.json>here</a></strong></p>
 
 <h3>Fields in package.json</h3>
 <p>Fields used are the rollup key as well as standard top-level keys name, main, module</p>
