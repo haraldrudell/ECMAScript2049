@@ -1,0 +1,513 @@
+#!/usr/bin/env node
+'use strict';
+
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
+var presetEnv = _interopDefault(require('@babel/preset-env'));
+var functionBind = _interopDefault(require('@babel/plugin-proposal-function-bind'));
+var exportDefaultFrom = _interopDefault(require('@babel/plugin-proposal-export-default-from'));
+var logicalAssignmentOperators = _interopDefault(require('@babel/plugin-proposal-logical-assignment-operators'));
+var optionalChaining = _interopDefault(require('@babel/plugin-proposal-optional-chaining'));
+var pipelineOperator = _interopDefault(require('@babel/plugin-proposal-pipeline-operator'));
+var nullishCoalescingOperator = _interopDefault(require('@babel/plugin-proposal-nullish-coalescing-operator'));
+var doExpressions = _interopDefault(require('@babel/plugin-proposal-do-expressions'));
+var decorators = _interopDefault(require('@babel/plugin-proposal-decorators'));
+var functionSent = _interopDefault(require('@babel/plugin-proposal-function-sent'));
+var exportNamespaceFrom = _interopDefault(require('@babel/plugin-proposal-export-namespace-from'));
+var numericSeparator = _interopDefault(require('@babel/plugin-proposal-numeric-separator'));
+var throwExpressions = _interopDefault(require('@babel/plugin-proposal-throw-expressions'));
+var dynamicImport = _interopDefault(require('@babel/plugin-syntax-dynamic-import'));
+var importMeta = _interopDefault(require('@babel/plugin-syntax-import-meta'));
+var classProperties = _interopDefault(require('@babel/plugin-proposal-class-properties'));
+var jsonStrings = _interopDefault(require('@babel/plugin-proposal-json-strings'));
+var babel = _interopDefault(require('@babel/core'));
+var fs = _interopDefault(require('fs-extra'));
+var path = _interopDefault(require('path'));
+var util = _interopDefault(require('util'));
+var childProcess = _interopDefault(require('child_process'));
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+/*
+© 2017-present Harald Rudell <harald.rudell@gmail.com> (http://www.haraldrudell.com)
+This source code is licensed under the ISC-style license found in the LICENSE file in the root directory of this source tree.
+*/
+var stage0Preset = {
+  plugins: [// 181204 https://babeljs.io/docs/en/babel-preset-stage-0
+  // stage 0
+  functionBind, // Stage 1
+  exportDefaultFrom, logicalAssignmentOperators, [optionalChaining, {
+    loose: false
+  }], [pipelineOperator, {
+    proposal: 'minimal'
+  }], [nullishCoalescingOperator, {
+    loose: false
+  }], doExpressions, // Stage 2
+  [decorators, {
+    legacy: true
+  }], functionSent, exportNamespaceFrom, numericSeparator, throwExpressions, // Stage 3
+  dynamicImport, importMeta, [classProperties, {
+    loose: false
+  }], jsonStrings]
+};
+
+/*
+© 2017-present Harald Rudell <harald.rudell@gmail.com> (http://www.haraldrudell.com)
+This source code is licensed under the ISC-style license found in the LICENSE file in the root directory of this source tree.
+*/
+var babelEnv = {
+  development: {
+    babelrc: false,
+    sourceMaps: true,
+    presets: [[presetEnv, {
+      targets: {
+        node: '8.5'
+      }
+    }], stage0Preset]
+  },
+  active: {
+    babelrc: false,
+    sourceMaps: true,
+    presets: [[presetEnv, {
+      targets: {
+        node: '8.9.4'
+      }
+    }], stage0Preset]
+  },
+  current: {
+    babelrc: false,
+    sourceMaps: true,
+    presets: [stage0Preset]
+  },
+  latest: {
+    babelrc: false,
+    sourceMaps: true,
+    presets: [stage0Preset]
+  },
+  rollup: {
+    babelrc: false,
+    sourceMaps: true,
+    presets: [[presetEnv, {
+      targets: {
+        node: '8.5'
+      },
+      modules: false
+    }], stage0Preset]
+  }
+};
+
+class ScriptTranspiler {
+  constructor(o) {
+    _defineProperty(this, "js", '.js');
+
+    _defineProperty(this, "mjs", '.mjs');
+
+    _defineProperty(this, "envKeepMjs", 'latest');
+
+    _defineProperty(this, "getEnv", env => String(env || process.env.BABEL_ENV || process.env.NODE_ENV || 'development'));
+
+    _defineProperty(this, "shouldTranspile", ext => ext === this.js || ext === this.mjs);
+
+    _defineProperty(this, "getToExt", ext => ext !== this.mjs || this.keepMjsExt ? ext : this.js);
+
+    if (!o) o = false;
+    const m = String(o.name || 'ScriptTranspiler');
+    const debug = Boolean(o.debug);
+    const {
+      envName
+    } = o;
+
+    const _env = this.getEnv(envName);
+
+    const babelOptions = babelEnv[_env];
+    if (!babelOptions) throw new Error(`${m} Unknown Babel envName: '${_env}'`);
+    const keepMjsExt = _env === this.envKeepMjs;
+    const envFriendly = this.getPrintableEnv(envName);
+    const cwd = process.cwd();
+    Object.assign(this, {
+      m,
+      babelOptions,
+      envFriendly,
+      debug,
+      cwd,
+      keepMjsExt
+    });
+    debug && console.log(`${m} constructor env: ${_env}`, {
+      envFriendly,
+      debug,
+      cwd,
+      keepMjsExt
+    }, 'babelEnv:', util.inspect(babelEnv, {
+      depth: null,
+      colors: true
+    }));
+  }
+
+  async transpile(o) {
+    if (!o) o = false;
+    if (!o.to) throw new Error(`${this.m} to cannot be empty`);
+    const to = String(o.to);
+    const from = String(o.from || '');
+    if (!from || !(await fs.pathExists(from)) || !(await fs.stat(from)).isDirectory()) throw new Error(`${this.m} not directory: '${from}'`);
+    return this.transpileDirectory({
+      from,
+      to
+    });
+  }
+
+  async transpileDirectory({
+    from,
+    to,
+    all
+  }) {
+    this.debug && console.log(`${this.m}.transpileDirectory ${from}`);
+    const [exists, entries] = await Promise.all([fs.pathExists(to), fs.readdir(from)]);
+
+    if (!exists) {
+      all = true;
+      await fs.ensureDir(to);
+    }
+
+    return Promise.all(entries.map(entry => this.processEntry({
+      entry,
+      from,
+      to,
+      all
+    })));
+  }
+
+  async processEntry({
+    entry,
+    from,
+    to,
+    all
+  }) {
+    const absolute = path.join(from, entry);
+    if ((await fs.stat(absolute)).isDirectory()) return this.transpileDirectory({
+      from: absolute,
+      to: path.join(to, entry),
+      all
+    });
+    const ext = path.extname(entry);
+    const toExt = this.getToExt(ext);
+    const dest = path.join(to, ext === toExt ? entry : entry.slice(0, -ext.length) + toExt);
+    if (all || (await this.needsUpdate(absolute, dest))) return !this.shouldTranspile(ext) ? fs.copy(absolute, dest) : this.transpileFile(absolute, dest);
+  }
+
+  async transpileFile(from, to) {
+    const {
+      debug,
+      cwd,
+      babelOptions
+    } = this;
+    debug && console.log(`transpileFile: ${path.relative(cwd, from)} ` + `to ${path.relative(cwd, to)} `);
+    const {
+      code
+      /*, map, ast*/
+
+    } = await new Promise((resolve, reject) => babel.transformFile(from, babelOptions, (e, r) => !e ? resolve(r) : reject(e)));
+    return fs.writeFile(to, code);
+  }
+
+  getPrintableEnv(env) {
+    if (env) return String(env);
+    const be = process.env.BABEL_ENV;
+    if (be) return `BABEL_ENV=${be}`;
+    const ne = process.env.NODE_ENV;
+    if (ne) return `NODE_ENV=${ne}`;
+    return 'default: development';
+  }
+
+  async needsUpdate(from, to) {
+    if (!(await fs.pathExists(to))) return true;
+    const [sFrom, sTo] = await Promise.all([fs.stat(from), fs.stat(to)]);
+    return sFrom.mtimeMs > sTo.mtimeMs;
+  }
+
+}
+
+/*
+© 2017-present Harald Rudell <harald.rudell@gmail.com> (http://www.haraldrudell.com)
+This source code is licensed under the ISC-style license found in the LICENSE file in the root directory of this source tree.
+*/
+const cspawn = childProcess.spawn;
+const nmbin = path.resolve('node_modules', '.bin');
+async function spawn(o) {
+  const {
+    cmd,
+    args = [],
+    options,
+    cp
+  } = o || false;
+  if (typeof cmd !== 'string' || !cmd) throw new Error('spawn-async: command not non-empty string');
+  if (!Array.isArray(args)) throw new Error('spawn-async: args not array');
+  const cmd1 = await checkNm(cmd);
+  return new Promise((resolve, reject) => {
+    const c = cspawn(cmd1, args, {
+      stdio: ['ignore', 'inherit', 'inherit'],
+      ...options
+    }).once('close', (status, signal) => {
+      if (status === 0 && !signal) resolve(status);else {
+        let msg = `status code: ${status}`;
+        if (signal) msg += ` signal: ${signal}`;
+        msg += ` '${cmd} ${args.join(' ')}'`;
+        const e = new Error(msg);
+        Object.assign(e, {
+          status,
+          signal
+        });
+        reject(e);
+      }
+    }).on('error', reject);
+    if (cp) cp.cp = c;
+  });
+}
+async function checkNm(cmd) {
+  if (path.dirname(cmd) === '.') {
+    const cmd1 = path.join(nmbin, cmd);
+    if (await fs.pathExists(cmd1)) return cmd1;
+  }
+
+  return cmd;
+}
+
+var name = "es2049scripts";
+var version = "1.0.0";
+var description = "ECMAScript 2049: ES.Next on every line by triple-transpile by Harald Rudell: ERASE THE PAST";
+var author = "Harald Rudell <harald.rudell@gmail.com> (http://haraldrudell.com)";
+var license = "ISC";
+var bin = {
+	es2049scripts: "bin/es2049scripts"
+};
+var scripts = {
+	build: "rollup --config config/rollup.config.js",
+	transpilezero: "npm-run-all transpilezero:*",
+	"transpilezero:eslint": "eslint --ext .mjs zerotranspiler configes configrollup",
+	"transpilezero:clean": "rimraf config/*",
+	"transpilezero:babel85": "babel --out-file config/babel85.js --plugins @babel/plugin-transform-modules-commonjs --extensions .mjs zerotranspiler/babel85.mjs",
+	"transpilezero:babeles": "babel --out-file config/babeles.js --plugins @babel/plugin-transform-modules-commonjs --extensions .mjs zerotranspiler/babeles.mjs",
+	"transpilezero:babel85es": "babel --out-file config/babel85es.js --config ./config/babeles.js --extensions .mjs zerotranspiler/babel85.mjs",
+	"transpilezero:babel": "babel --out-file config/transpilezero.js --extensions .mjs --config-file ./config/babel85.js zerotranspiler/transpile-zero.mjs zerotranspiler/ZeroTranspiler.mjs",
+	"transpilezero:transpile": "node config/transpilezero",
+	reinstall: "npm-run-all reinstall:clean reinstall:install",
+	"reinstall:clean": "rimraf node_modules ../../node_modules",
+	"reinstall:install": "yarn",
+	clean: "rimraf bin",
+	testmjs: "node --experimental-modules src/esmodule.test.mjs",
+	testProject: "node config/scripts-test",
+	test: "jest"
+};
+var keywords = [
+	"ECMAScript",
+	"ECMAScript 2049",
+	"ES.Next",
+	"JavaScript",
+	"Transpile"
+];
+var repository = {
+	type: "git",
+	url: "https://github.com/haraldrudell/ECMAScript2049"
+};
+var engines = {
+	node: ">= 9"
+};
+var jest = {
+	rootDir: "./../.."
+};
+var dependencies = {
+	"@babel/core": "^7.2.0",
+	"@babel/plugin-proposal-class-properties": "^7.2.1",
+	"@babel/plugin-proposal-decorators": "^7.2.0",
+	"@babel/plugin-proposal-do-expressions": "^7.2.0",
+	"@babel/plugin-proposal-export-default-from": "^7.2.0",
+	"@babel/plugin-proposal-export-namespace-from": "^7.2.0",
+	"@babel/plugin-proposal-function-bind": "^7.2.0",
+	"@babel/plugin-proposal-function-sent": "^7.2.0",
+	"@babel/plugin-proposal-json-strings": "^7.2.0",
+	"@babel/plugin-proposal-logical-assignment-operators": "^7.2.0",
+	"@babel/plugin-proposal-nullish-coalescing-operator": "^7.2.0",
+	"@babel/plugin-proposal-numeric-separator": "^7.2.0",
+	"@babel/plugin-proposal-optional-chaining": "^7.2.0",
+	"@babel/plugin-proposal-pipeline-operator": "^7.2.0",
+	"@babel/plugin-proposal-throw-expressions": "^7.2.0",
+	"@babel/plugin-syntax-dynamic-import": "^7.2.0",
+	"@babel/plugin-syntax-import-meta": "^7.2.0",
+	"@babel/plugin-transform-modules-commonjs": "^7.2.0",
+	"@babel/preset-env": "^7.2.0",
+	"babel-eslint": "^10.0.1",
+	eslint: "^6.1.0",
+	"eslint-plugin-babel": "^5.3.0",
+	"fs-extra": "^8.1.0",
+	resolve: "^1.8.1",
+	rollup: "^1.18.0",
+	"rollup-plugin-babel": "^4.0.3",
+	"rollup-plugin-commonjs": "^10.0.2",
+	"rollup-plugin-eslint": "^7.0.0",
+	"rollup-plugin-json": "^4.0.0",
+	"rollup-plugin-node-resolve": "^5.2.0",
+	"rollup-plugin-thatworks": "^0.0.3"
+};
+var devDependencies = {
+	"@babel/cli": "^7.2.0",
+	"babel-core": "7.0.0-bridge.0",
+	"babel-jest": "^24.8.0",
+	jest: "^24.8.0",
+	"npm-run-all": "^4.1.5",
+	rimraf: "^2.6.3"
+};
+var pjson = {
+	name: name,
+	version: version,
+	description: description,
+	author: author,
+	license: license,
+	bin: bin,
+	scripts: scripts,
+	keywords: keywords,
+	repository: repository,
+	engines: engines,
+	jest: jest,
+	dependencies: dependencies,
+	devDependencies: devDependencies
+};
+
+/*
+© 2017-present Harald Rudell <harald.rudell@gmail.com> (http://www.haraldrudell.com)
+This source code is licensed under the ISC-style license found in the LICENSE file in the root directory of this source tree.
+*/
+function parseOptions({
+  argv,
+  name,
+  version
+}) {
+  const filenameProperties = ['from', 'to'];
+  const targets = {
+    // values are property names in babelenv.mjs
+    '-current': 'current',
+    '-active': 'active',
+    '-latest': 'latest',
+    '-rollup': 'rollup'
+  };
+
+  function exit(msg) {
+    const statusCode = msg ? 2 : 0;
+    const logFn = statusCode ? console.error : console.log;
+    msg && logFn(`${msg}\n`);
+    logFn([`${name} [options] source-directory target-directory args…`, `    version: ${version}`, '  Transpiles from ES.Next to Node.js executable format', '    Default target is Node.js 6.12.3 maintenance Long Term Support', '    Transpiles .js and .mjs (may be renamed to .js), other files are copied', '    Actions may be skipped based on modification date', '', '  -active  Target latest Node.js LTS: 8.9.4', '  -current  Target the executing Node.js version, must be v8.6+, CommonJS modules', '  -latest  Target the executing Node.js version --experimental-modules v8.6+', '    Extension .mjs is kept on output', '  -rollup  Target transpile of rollup.config.js: for buble with import', '  --  Skip options parsing to args parameter', '', '  source-directory default: ./configes', '  target-directory default: ./config', '  args…  Any command with arguments to be launched on transpile complete'].join('\n'));
+    process.exit(statusCode);
+  }
+
+  const filenames = {
+    from: 'configes',
+    to: 'config'
+  };
+  const options = {
+    name
+  };
+  let args;
+  let argCount = 0;
+
+  for (let i = 0, arg = argv[i]; i < argv.length; arg = argv[++i]) switch (arg) {
+    case '-h':
+    case '-help':
+    case '--help':
+      exit();
+    // eslint-disable-line no-fallthrough
+
+    case '-debug':
+      options.debug = true;
+      break;
+
+    case '-active':
+    case '-current':
+    case '-latest':
+    case '-rollup':
+      options.envName = targets[arg];
+      break;
+
+    case '--':
+      args = argv.slice(++i);
+      i = argv.length;
+      break;
+
+    default:
+      if (arg.startsWith('-')) exit(`Unknown option: '${arg}'\n`);
+      if (!arg) exit('Directory name cannot be empty');
+
+      if (argCount < 2) {
+        const filenameProperty = filenameProperties[argCount++];
+        filenames[filenameProperty] = arg;
+      } else {
+        args = argv.slice(i);
+        i = argv.length;
+      }
+
+      break;
+  }
+
+  for (let prop of filenameProperties) filenames[prop] = path.resolve(filenames[prop]);
+
+  return {
+    filenames,
+    options,
+    args
+  };
+}
+
+/*
+© 2017-present Harald Rudell <harald.rudell@gmail.com> (http://www.haraldrudell.com)
+This source code is licensed under the ISC-style license found in the LICENSE file in the root directory of this source tree.
+*/
+const defName = 'es2049scripts';
+const defVersion = 'unknown version';
+const defMarker = 'src/index';
+const pjName = Object(pjson).name;
+const pjVersion = Object(pjson).version;
+const m = String(pjName || defMarker);
+let debug;
+run().catch(onRejected);
+
+async function run() {
+  const argv = process.argv.slice(2);
+  const name = String(pjName || defName);
+  const version = String(pjVersion || defVersion);
+  const {
+    filenames,
+    options,
+    args
+  } = parseOptions({
+    argv,
+    name,
+    version
+  });
+  options.debug && (debug = true) && console.log(`${name}.run:`, options, filenames);
+  await new ScriptTranspiler(options).transpile(filenames);
+
+  if (args) {
+    debug && console.log(`${name}.launch:`, ...args);
+    return spawn({
+      cmd: args.shift(),
+      args
+    });
+  }
+}
+
+function onRejected(e) {
+  debug && console.error(`${m} onRejected:`);
+  if (!(e instanceof Error)) e = new Error(`Error value: ${typeof e} ${e}`);
+  console.error(!debug ? e.message : e);
+  process.exit(1);
+}
