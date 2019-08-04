@@ -1,0 +1,12 @@
+{
+  "name": "ecmascript2049",
+  "version": "0.0.1",
+  "author": "Harald Rudell <harald.rudell@gmail.com> (http://haraldrudell.com)",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "resolutions": {
+    "jest": "^24.8.0"
+  }
+}

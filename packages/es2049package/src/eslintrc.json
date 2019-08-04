@@ -1,0 +1,79 @@
+{
+  "root": true,
+  "parser": "babel-eslint",
+  "rules": {
+    "accessor-pairs": "off",
+    "brace-style": [
+      "error",
+      "1tbs"
+    ],
+    "comma-dangle": [
+      "error",
+      "always-multiline"
+    ],
+    "consistent-return": "off",
+    "curly": "off",
+    "dot-location": [
+      "error",
+      "property"
+    ],
+    "dot-notation": "error",
+    "eol-last": "error",
+    "eqeqeq": [
+      "error",
+      "allow-null"
+    ],
+    "indent": "off",
+    "jsx-quotes": [
+      "error",
+      "prefer-double"
+    ],
+    "keyword-spacing": [
+      "error",
+      {
+        "after": true,
+        "before": true
+      }
+    ],
+    "max-len": "off",
+    "no-bitwise": "off",
+    "no-console": "off",
+    "no-inner-declarations": [
+      "error",
+      "functions"
+    ],
+    "no-multi-spaces": "error",
+    "no-restricted-syntax": [
+      "error",
+      "WithStatement"
+    ],
+    "semi": "off",
+    "no-shadow": "error",
+    "no-unused-expressions": [
+      "error",
+      {
+        "allowShortCircuit": true
+      }
+    ],
+    "no-unused-vars": [
+      "error",
+      {
+        "args": "none"
+      }
+    ],
+    "no-useless-concat": "off",
+    "quotes": [
+      "error",
+      "single",
+      {
+        "avoidEscape": true,
+        "allowTemplateLiterals": true
+      }
+    ],
+    "space-before-blocks": "error",
+    "space-before-function-paren": "off"
+  },
+  "globals": {
+    "expectDev": true
+  }
+}
