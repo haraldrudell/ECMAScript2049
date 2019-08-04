@@ -3,8 +3,8 @@
 All rights reserved.
 */
 import pjson from '../package.json'
-import nodeIgnores from './nodepackages'
-import babel85 from './babel85es'
+import nodeIgnores from './nodepackages.js'
+import babel85 from './babel85es.js'
 
 import babel from 'rollup-plugin-babel'
 import { eslint } from 'rollup-plugin-eslint'

@@ -31,7 +31,7 @@
     "babel-preset-7-esnext": "^0.0.2"
   },
   "devDependencies": {
-    "es2049scripts": "^1.0.0",
+    "es2049scripts": "^1.1.0",
     "jest": "^24.8.0",
     "test": "0.0.1"
   }

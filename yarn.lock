@@ -3100,7 +3100,7 @@ jest-worker@^24.6.0:
     merge-stream "^1.0.1"
     supports-color "^6.1.0"
 
-jest@^23.6.0, jest@^24.8.0:
+jest@^24.8.0:
   version "24.8.0"
   resolved "https://registry.yarnpkg.com/jest/-/jest-24.8.0.tgz#d5dff1984d0d1002196e9b7f12f75af1b2809081"
   integrity sha512-o0HM90RKFRNWmAWvlyV8i5jGZ97pFwkeVoGvPW1EtLTgJc2+jcuqcbbqcSZLE/3f2S5pt0y2ZBETuhpWNl1Reg==
@@ -4231,10 +4231,10 @@ rollup-plugin-node-resolve@^5.2.0:
     resolve "^1.11.1"
     rollup-pluginutils "^2.8.1"
 
-rollup-plugin-thatworks@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/rollup-plugin-thatworks/-/rollup-plugin-thatworks-0.0.3.tgz#d059e0c265d4f8ea9023f9e4e1828befde229ea6"
-  integrity sha512-z8mKBnELiVUmc+xUhe8c1F9C/TdN0Ts9B90kAseu3j4bsLorCTUDT5VhoLHLaJsKidusHxfBpoeL8GUTTjPpYg==
+rollup-plugin-thatworks@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-thatworks/-/rollup-plugin-thatworks-0.1.1.tgz#95d8f6e46f70bebbec52bfbddcbced9ac0548bec"
+  integrity sha512-4t/wOYqDMWg1teVfY3p9VnXl+veiKoxFaPwP90EWbpCj1Tqa1teS9hJPJZPuq0HY9O7PRyng3bAwZerypIG8ng==
   dependencies:
     fs-extra "^8.1.0"
 

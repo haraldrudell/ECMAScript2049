@@ -35,6 +35,6 @@
   },
   "devDependencies": {
     "es2049package": "^1.0.1",
-    "jest": "^23.6.0"
+    "jest": "^24.8.0"
   }
 }
