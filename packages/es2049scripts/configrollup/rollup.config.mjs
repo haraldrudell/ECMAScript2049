@@ -46,8 +46,8 @@ export default {
     function chmodPlugin(mode) {
       return {
         name: 'chmodPlugin',
-        onwrite(bundle, data) {
-          const filename = bundle && (bundle.file || bundle.dest)
+        generateBundle(bundle, data) { // rollup 1.x (0.x is onwrite)
+          let filename = bundle && (bundle.file || bundle.dest)
           if (!filename) throw new Error('chmodPlugin.onwrite: filename missing')
           fs.chmodSync(filename, mode >= 0 ? Number(mode) : 0o755) // rwxr-xr-x
         },
