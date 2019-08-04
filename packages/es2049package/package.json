@@ -1,6 +1,6 @@
 {
   "name": "es2049package",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "ECMAScript 2049 package: zero-configuration libraries and command-line utilies by Harald Rudell",
   "author": "Harald Rudell <harald.rudell@gmail.com> (http://haraldrudell.com)",
   "license": "ISC",
@@ -13,8 +13,8 @@
     "reinstall:install": "yarn",
     "test": "jest"
   },
+  "type": "module",
   "main": "lib/es2049package.js",
-  "module": "lib/es2049package.mjs",
   "bin": {
     "clean": "bin/clean",
     "rollup": "bin/rollup"
@@ -26,6 +26,9 @@
     "JavaScript",
     "Transpile"
   ],
+  "devEngines": {
+    "node": ">= 12"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/haraldrudell/ECMAScript2049"
@@ -37,7 +40,7 @@
     "allspawn": "^1.0.0",
     "babel-core": "7.0.0-bridge.0",
     "babel-jest": "^24.8.0",
-    "es2049scripts": "^1.0.0",
+    "es2049scripts": "^1.1.0",
     "jest": "^24.8.0",
     "js-yaml": "^3.12.0",
     "npm-run-all": "^4.1.5",
@@ -72,6 +75,6 @@
     "rollup-plugin-eslint": "^7.0.0",
     "rollup-plugin-json": "^4.0.0",
     "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-thatworks": "^0.0.3"
+    "rollup-plugin-thatworks": "^0.1.1"
   }
 }

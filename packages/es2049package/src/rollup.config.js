@@ -3,7 +3,6 @@
 This source code is licensed under the ISC-style license found in the LICENSE file in the root directory of this source tree.
 */
 import RollupConfigurator from './RollupConfigurator'
-import chmod from './rollupChmodPlugin'
 import warningsMuffler from './rollupWarningsMuffler'
 import cleanPlugin from './rollupCleanPlugin'
 import printPlugin from './rollupPrintPlugin'
@@ -18,7 +17,8 @@ import resolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
 import { eslint } from 'rollup-plugin-eslint'
 import json from 'rollup-plugin-json'
-import { shebang as shebangPlugin } from 'rollup-plugin-thatworks'
+// rollup 1.x does not process import statements in referenced packages, so use cjs
+import { shebang as shebangPlugin, chmod } from 'rollup-plugin-thatworks/lib/cjs.js'
 
 import stage0Preset from './stage0Preset'
 

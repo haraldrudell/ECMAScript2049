@@ -3,22 +3,22 @@
 This source code is licensed under the ISC-style license found in the LICENSE file in the root directory of this source tree.
 */
 import pjson from '../package.json'
-import nodeIgnores from '../src/nodepackages.mjs'
-import babelPrintFilename from '../src/babelPrintFilenamePlugin.mjs'
-import {convertYaml} from './convertYaml'
-import chmod from '../src/rollupChmodPlugin.mjs'
+import nodeIgnores from '../src/nodepackages.js'
+import babelPrintFilename from '../src/babelPrintFilenamePlugin.js'
+import {convertYaml} from './convertYaml.js'
 
 import babel from 'rollup-plugin-babel'
 import commonjs from 'rollup-plugin-commonjs'
 import { eslint } from 'rollup-plugin-eslint'
 import json from 'rollup-plugin-json'
 import resolve from 'rollup-plugin-node-resolve'
-import { shebang as shebangPlugin } from 'rollup-plugin-thatworks'
+// rollup 1.x does not handle import statements inside imported packages: use cjs
+import { shebang as shebangPlugin, chmod } from 'rollup-plugin-thatworks/lib/cjs.js'
 
 import path from 'path'
 import util from 'util'
 
-const srcRollupConfig = 'src/rollup.config.mjs'
+const srcRollupConfig = 'src/rollup.config.js'
 
 const print = !!process.env.DEBUG
 
@@ -26,9 +26,8 @@ convertYaml(path.resolve('src', 'eslintrc.yaml'), path.resolve('src', 'eslintrc.
 
 export default [
   {input: srcRollupConfig, output: {file: pjson.main, format: 'cjs'}, options: {dependencies: true}},
-  {input: srcRollupConfig, output: {file: pjson.module, format: 'es'}, options: {dependencies: true}},
-  {input: 'src/cleanbin.mjs', output: {file: 'bin/clean', format: 'cjs'}, options: {shebang: true}},
-  {input: 'src/rollup.mjs', output: {file: 'bin/rollup', format: 'cjs'}, options: {shebang: true}},
+  {input: 'src/cleanbin.js', output: {file: 'bin/clean', format: 'cjs'}, options: {shebang: true}},
+  {input: 'src/rollup.js', output: {file: 'bin/rollup', format: 'cjs'}, options: {shebang: true}},
 ].map(getConfig)
 
 function getConfig(config0) {
