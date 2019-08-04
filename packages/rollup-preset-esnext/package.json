@@ -13,7 +13,7 @@
     "test": "jest"
   },
   "devEngines": {
-    "node": "9.x"
+    "node": ">= 9"
   },
   "engines": {
     "node": ">= 8.5"
@@ -35,16 +35,16 @@
   ],
   "devDependencies": {
     "es2049package": "^1.0.1",
-    "jest": "^23.6.0",
+    "jest": "^24.8.0",
     "test": "0.0.1"
   },
   "dependencies": {
     "babel-preset-7-esnext": "^0.0.2",
-    "rollup": "^0.68.1",
+    "rollup": "^1.18.0",
     "rollup-plugin-babel": "^4.0.3",
-    "rollup-plugin-commonjs": "^9.2.0",
-    "rollup-plugin-eslint": "^5.0.0",
-    "rollup-plugin-json": "^3.1.0",
-    "rollup-plugin-node-resolve": "^4.0.0"
+    "rollup-plugin-commonjs": "^10.0.2",
+    "rollup-plugin-eslint": "^7.0.0",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-node-resolve": "^5.2.0"
   }
 }
