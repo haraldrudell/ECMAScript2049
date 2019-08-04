@@ -1,0 +1,38 @@
+{
+  "name": "jest-esnext",
+  "version": "0.0.4",
+  "description": "Jest ES.Next configuration by Harald Rudell",
+  "author": "Harald Rudell <harald.rudell@gmail.com> (http://haraldrudell.com)",
+  "license": "ISC",
+  "main": "src",
+  "scripts": {
+    "build": "es2049scripts -active",
+    "pub": "yarn publish --patch",
+    "test": "jest"
+  },
+  "keywords": [
+    "Jest",
+    "ES.Next",
+    "transpile",
+    "ECMAScript"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/haraldrudell/ECMAScript2049"
+  },
+  "files": [
+    "src",
+    "config"
+  ],
+  "dependencies": {
+    "@babel/core": "^7.2.2",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-jest": "^24.8.0",
+    "babel-preset-7-esnext": "^0.0.2"
+  },
+  "devDependencies": {
+    "es2049scripts": "^1.0.0",
+    "jest": "^24.8.0",
+    "test": "0.0.1"
+  }
+}
