@@ -1,0 +1,50 @@
+{
+  "name": "rollup-preset-esnext",
+  "version": "0.0.2",
+  "description": "ES.Next transpile preset for Rollup by Harald Rudell",
+  "author": "Harald Rudell <harald.rudell@gmail.com> (http://haraldrudell.com)",
+  "license": "ISC",
+  "module": "lib/rollup-preset-7-esnext",
+  "scripts": {
+    "build": "rollup --config node:es2049package",
+    "pub": "yarn publish --patch",
+    "clean": "clean lib",
+    "debugtest": "node --inspect-brk node_modules/.bin/jest --runInBand",
+    "test": "jest"
+  },
+  "devEngines": {
+    "node": "9.x"
+  },
+  "engines": {
+    "node": ">= 8.5"
+  },
+  "keywords": [
+    "babel",
+    "babel7",
+    "ES.Next",
+    "transpile",
+    "Rollup",
+    "ECMAScript"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/haraldrudell/ECMAScript2049"
+  },
+  "files": [
+    "lib"
+  ],
+  "devDependencies": {
+    "es2049package": "^1.0.1",
+    "jest": "^23.6.0",
+    "test": "0.0.1"
+  },
+  "dependencies": {
+    "babel-preset-7-esnext": "^0.0.2",
+    "rollup": "^0.68.1",
+    "rollup-plugin-babel": "^4.0.3",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-eslint": "^5.0.0",
+    "rollup-plugin-json": "^3.1.0",
+    "rollup-plugin-node-resolve": "^4.0.0"
+  }
+}
