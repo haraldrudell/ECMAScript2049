@@ -44,7 +44,7 @@ export default class SpawnAsync extends SpawnPipe {
 
     // await child process exit
     const [{e, status, signal}, {stdout, stderr, isStderr}] = await Promise.all([promise, this.startCapture()])
-    const {isTimeout, timeout, clearTimer, nonZeroOk} = this
+    const {isTimeout, timeout, clearTimer, nonZeroOk, signalOk} = this
     debug && console.log(`${this.m} process exit:`, {e, status, signal, stdout: stdout && stdout.length, stderr: stderr && stderr.length, isStderr, isTimeout, ss: stdout})
 
     // handle timeout
